@@ -1,0 +1,13 @@
+//write a program to find area of triangle(a=h*b*0.5)
+#include<stdio.h>
+#include<conio.h>
+void main()
+{
+   float a,b,h;
+   clrscr();
+   printf("enter b and h:");
+   scanf("%f%f",&b,&h);
+   a=0.5*b*h;
+   printf("area of triangle:%f",a);
+   getch();
+}
