@@ -1,0 +1,15 @@
+  
+//write a program to compare fahrenheit from centigrade(f=1.8*c)+32
+#include<stdio.h>
+#include<conio.h>
+void main()
+{
+
+       float f,c;
+       clrscr();
+       printf("enter centigrade:");
+       scanf("%f",&c)
+       f=(1.8*c)+32;
+       printf("\n fahrenheit:%f",f);
+       getch();
+}
