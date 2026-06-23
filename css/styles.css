@@ -179,6 +179,14 @@ body {
 .sdk-key { padding: 14px 0; border: none; border-radius: 10px; background: var(--bg2); color: #fff; font-size: 18px; font-weight: 700; cursor: pointer; }
 .sdk-key.erase { background: #2a2f47; }
 
+/* ---------- Block Drop (Tetris) ---------- */
+.tetris { max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.tt-top { display: flex; gap: 18px; color: var(--muted); font-size: 14px; } .tt-top b { color: var(--fg); }
+.tt-canvas { background: #0c0f1f; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); touch-action: none; }
+.tt-controls { display: flex; gap: 8px; width: 100%; max-width: 340px; }
+.tt-controls button { flex: 1; padding: 16px 0; border: none; border-radius: 12px; background: var(--bg2); color: #fff; font-size: 20px; font-weight: 700; cursor: pointer; }
+.tt-controls button:active { background: var(--accent); }
+
 /* ---------- Toast ---------- */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0;
   background: #fff; color: #0e1020; padding: 12px 20px; border-radius: 12px; font-weight: 700; z-index: 100;
