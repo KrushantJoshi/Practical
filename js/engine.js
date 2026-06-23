@@ -26,7 +26,7 @@ export const Engine = (() => {
   };
 
   // ---- Haptics ----------------------------------------------------------
-  const haptic = (ms = 12) => { try { navigator.vibrate && navigator.vibrate(ms); } catch {} };
+  const haptic = (ms = 12) => { try { if (store.get('haptics', true) && navigator.vibrate) navigator.vibrate(ms); } catch {} };
 
   // ---- Sound (WebAudio, generated on the fly) ---------------------------
   let actx = null;

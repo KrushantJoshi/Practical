@@ -56,4 +56,16 @@ export const Meta = {
 
   // Re-check store-only achievements (streaks, prestige, variety) e.g. on hub open.
   refresh() { evaluate({ game: '', score: 0, win: false, store: Engine.store }); },
+
+  // ---- Daily reward (retention) ----
+  _day() { return Math.floor(Date.now() / 86400000); },
+  dailyAvailable() { return Engine.store.get('daily_last', -1) !== this._day(); },
+  claimDaily() {
+    const d = this._day(), last = Engine.store.get('daily_last', -2);
+    const streak = last === d - 1 ? Engine.store.get('daily_streak', 0) + 1 : 1;
+    Engine.store.set('daily_streak', streak); Engine.store.set('daily_last', d);
+    const amount = 20 + Math.min(streak, 7) * 10;
+    add(amount);
+    return { amount, streak };
+  },
 };

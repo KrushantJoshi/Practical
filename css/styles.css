@@ -211,6 +211,11 @@ body {
 .c4-cell.ai { background: radial-gradient(circle at 35% 35%, #ffe08a, #ffd166); }
 .c4-score { color: var(--muted); font-size: 13px; } .c4-score b { color: var(--fg); }
 
+/* ---------- Settings ---------- */
+.set-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.toggle { background: #2a2f47; color: var(--fg); border: none; border-radius: 999px; padding: 8px 18px; font-weight: 700; cursor: pointer; min-width: 64px; }
+.toggle.on { background: #06d6a0; color: #04231a; }
+
 /* ---------- Toast ---------- */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0;
   background: #fff; color: #0e1020; padding: 12px 20px; border-radius: 12px; font-weight: 700; z-index: 100;

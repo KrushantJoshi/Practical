@@ -60,6 +60,7 @@ const els = {
   coins: document.getElementById('coins'),
   openAch: document.getElementById('open-ach'),
   openThemes: document.getElementById('open-themes'),
+  openSettings: document.getElementById('open-settings'),
 };
 
 let controller = null;
@@ -172,6 +173,32 @@ els.openThemes.onclick = () => {
   };
   paint();
 };
+els.openSettings.onclick = () => {
+  const sound = Engine.store.get('sound', true), haptics = Engine.store.get('haptics', true);
+  const ov = closableOverlay(`<div class="over-title">Settings</div>
+    <div class="set-row"><span>Sound</span><button class="toggle ${sound ? 'on' : ''}" id="set-sound">${sound ? 'On' : 'Off'}</button></div>
+    <div class="set-row"><span>Haptics</span><button class="toggle ${haptics ? 'on' : ''}" id="set-haptics">${haptics ? 'On' : 'Off'}</button></div>
+    <div class="set-row"><span>Remove ads</span><button class="toggle" id="set-noads">${Money.state.removeAds ? 'Owned' : 'Buy'}</button></div>
+    <button class="btn ghost" id="set-reset" style="margin-top:8px">Reset all progress</button>`);
+  const tog = (id, key) => { const b = ov.querySelector(id); b.onclick = () => { const v = !Engine.store.get(key, true); Engine.store.set(key, v); b.textContent = v ? 'On' : 'Off'; b.classList.toggle('on', v); if (key === 'sound') els.sound.textContent = v ? '🔊' : '🔇'; }; };
+  tog('#set-sound', 'sound'); tog('#set-haptics', 'haptics');
+  ov.querySelector('#set-noads').onclick = async () => { if (await Money.buyRemoveAds()) { ov.querySelector('#set-noads').textContent = 'Owned'; } };
+  ov.querySelector('#set-reset').onclick = () => { if (confirm('Erase all scores, coins, achievements and themes?')) { localStorage.removeItem('tapforge.v1'); Themes.init(); ov.remove(); renderHub(); } };
+};
+
+// ---- Daily reward ----
+function maybeDailyReward() {
+  if (!Meta.dailyAvailable()) return;
+  const { amount, streak } = Meta.claimDaily();
+  const ov = document.createElement('div'); ov.className = 'over-overlay';
+  ov.innerHTML = `<div class="over-card">
+    <div class="over-title">Daily Reward 🎁</div>
+    <div class="over-score">+${amount}🪙</div>
+    <div class="over-high">Day ${streak} streak — come back tomorrow!</div>
+    <div class="over-actions"><button class="btn again">Collect</button></div></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('.again').onclick = () => { ov.remove(); renderHub(); };
+}
 
 // ---- Boot: platform + PWA ----------------------------------------------
 Themes.init();
@@ -185,3 +212,4 @@ if (document.fonts && document.fonts.load) {
 }
 
 renderHub();
+maybeDailyReward();

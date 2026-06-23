@@ -36,11 +36,12 @@ export const BlockDrop = {
         </div>
       </div>`;
     const canvas = root.querySelector('#tt-canvas'), ctx = canvas.getContext('2d');
-    let grid, cur, px, py, score, lines, over, dropAcc, dropEvery, raf, last, cell;
+    let grid, cur, nextK, px, py, score, lines, over, dropAcc, dropEvery, raf, last, cell;
 
     function fit() { const maxW = Math.min((root.clientWidth || 360) - 32, 340); cell = Math.max(14, Math.floor(maxW / COLS)); canvas.width = cell * COLS; canvas.height = cell * ROWS; canvas.style.width = canvas.width + 'px'; canvas.style.height = canvas.height + 'px'; }
     const rot = (m) => { const R = m.length, C = m[0].length, r = Array.from({ length: C }, () => Array(R).fill(0)); for (let i = 0; i < R; i++) for (let j = 0; j < C; j++) r[j][R - 1 - i] = m[i][j]; return r; };
-    function spawn() { const keys = Object.keys(SHAPES), k = keys[Math.floor(Math.random() * keys.length)]; cur = { k, m: SHAPES[k].map(r => r.slice()) }; px = Math.floor((COLS - cur.m[0].length) / 2); py = 0; if (collide(cur.m, px, py)) { over = true; end(); } }
+    const randK = () => { const keys = Object.keys(SHAPES); return keys[Math.floor(Math.random() * keys.length)]; };
+    function spawn() { const k = nextK || randK(); nextK = randK(); cur = { k, m: SHAPES[k].map(r => r.slice()) }; px = Math.floor((COLS - cur.m[0].length) / 2); py = 0; if (collide(cur.m, px, py)) { over = true; end(); } }
     function collide(m, ox, oy) { for (let i = 0; i < m.length; i++) for (let j = 0; j < m[i].length; j++) { if (!m[i][j]) continue; const x = ox + j, y = oy + i; if (x < 0 || x >= COLS || y >= ROWS) return true; if (y >= 0 && grid[y][x]) return true; } return false; }
     function merge() { for (let i = 0; i < cur.m.length; i++) for (let j = 0; j < cur.m[i].length; j++) if (cur.m[i][j]) { const y = py + i; if (y >= 0) grid[y][px + j] = cur.k; } }
     function clearLines() {
@@ -59,7 +60,19 @@ export const BlockDrop = {
     function draw() {
       ctx.fillStyle = '#0c0f1f'; ctx.fillRect(0, 0, canvas.width, canvas.height);
       for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (grid[r][c]) cellRect(c, r, COLORS[grid[r][c]]);
-      if (!over && cur) for (let i = 0; i < cur.m.length; i++) for (let j = 0; j < cur.m[i].length; j++) if (cur.m[i][j]) cellRect(px + j, py + i, COLORS[cur.k]);
+      if (!over && cur) {
+        // ghost: where the piece will land
+        let gy = py; while (!collide(cur.m, px, gy + 1)) gy++;
+        if (gy > py) { ctx.globalAlpha = 0.22; for (let i = 0; i < cur.m.length; i++) for (let j = 0; j < cur.m[i].length; j++) if (cur.m[i][j]) cellRect(px + j, gy + i, COLORS[cur.k]); ctx.globalAlpha = 1; }
+        for (let i = 0; i < cur.m.length; i++) for (let j = 0; j < cur.m[i].length; j++) if (cur.m[i][j]) cellRect(px + j, py + i, COLORS[cur.k]);
+      }
+      // next-piece preview (top-right, on a small panel)
+      if (nextK) {
+        const nm = SHAPES[nextK], pc = cell * 0.5, pw = 4 * pc, x0 = canvas.width - pw - 4, y0 = 4;
+        ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(x0 - 4, y0 - 4, pw + 8, 3 * pc + 8);
+        ctx.fillStyle = COLORS[nextK];
+        for (let i = 0; i < nm.length; i++) for (let j = 0; j < nm[i].length; j++) if (nm[i][j]) ctx.fillRect(x0 + j * pc + 1, y0 + i * pc + 1, pc - 2, pc - 2);
+      }
     }
     function reset() { grid = Array.from({ length: ROWS }, () => Array(COLS).fill('')); score = 0; lines = 0; over = false; dropEvery = 0.7; dropAcc = 0; spawn(); refresh(); draw(); }
     async function end() {
