@@ -1,6 +1,6 @@
 # TapForge 🎮
 
-A suite of **30 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
+A suite of **31 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
 
 One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for the app stores) **and web game portals** (Poki, CrazyGames, GameDistribution).
 
@@ -47,6 +47,7 @@ One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for t
 | **Grid Defense** | Tower defense: build, auto-target, survive waves |
 | **Air Hockey** | Puck physics vs a defending/attacking AI |
 | **Blackjack** | Hit 21, beat the dealer (aces soft/hard) |
+| **Checkers** | Forced captures, multi-jumps, kings vs AI |
 
 Why these? Research (see [MONETIZATION.md](./MONETIZATION.md)) shows the most *addictive yet simple* genres are **hyper-casual arcade**, **puzzle/match-3** (the #1 download & top-grossing casual genres), and **idle/incremental** (the highest retention) — plus deeper strategy/action titles for longer sessions. The mix covers quick-session play, daily-habit retention (Daily Word streaks), and long-term progression (Idle Forge, Grid Defense).
 
@@ -90,7 +91,7 @@ js/monetization.js      player-friendly ad policy (caps, remove-ads IAP)
 js/meta.js              coins + achievements (cross-game progression)
 js/themes.js            cosmetic unlockable themes (coin sink)
 js/ui.js                shared game-over dialog, toast, number formatting
-js/games/*.js           the 30 games (17 canvas + 13 DOM)
+js/games/*.js           the 31 games (17 canvas + 14 DOM)
 manifest.webmanifest    PWA install metadata
 service-worker.js       offline caching
 assets/                 CC0/OFL font + original icon  (see ASSETS.md)
