@@ -17,7 +17,7 @@ const DOM = [
   ['merge2048', 'Merge2048'], ['word', 'DailyWord'], ['memory', 'MemoryMatch'], ['idle', 'IdleForge'],
   ['tictactoe', 'TicTacToe'], ['mines', 'Minesweeper'], ['sudoku', 'Sudoku'], ['tetris', 'BlockDrop'],
   ['solitaire', 'Solitaire'], ['connect4', 'ConnectFour'], ['lightsout', 'LightsOut'], ['blackjack', 'Blackjack'],
-  ['wordsearch', 'WordSearch'], ['checkers', 'Checkers'],
+  ['wordsearch', 'WordSearch'], ['checkers', 'Checkers'], ['reversi', 'Reversi'], ['hangman', 'Hangman'],
 ];
 
 let err = 0;

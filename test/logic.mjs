@@ -54,6 +54,17 @@ const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   b = empty(); b[1][0] = 1; const km = _test.genAll(b, 'r').find(m => m.to.r === 0);
   ck('checkers king promotion', !!km && km.board[0][km.to.c] === 2);
 }
+// ---- Reversi legal moves + flipping (imported from the game) ----
+{
+  const { _test } = await import('../js/games/reversi.js');
+  const b = Array.from({ length: 8 }, () => Array(8).fill(0));
+  b[3][3] = 2; b[3][4] = 1; b[4][3] = 1; b[4][4] = 2; // standard opening (1=black,2=white)
+  const moves = _test.legalMoves(b, 1);
+  ck('reversi opening has 4 moves', moves.size === 4);
+  const k = '2,3'; ck('reversi (2,3) is legal', moves.has(k));
+  const nb = _test.apply(b, 2, 3, 1, moves.get(k));
+  ck('reversi flips the flanked disc', nb[3][3] === 1);
+}
 // ---- Sudoku generator validity ----
 {
   const ok = (b, i, n) => { const r = Math.floor(i / 9), c = i % 9, br = r - r % 3, bc = c - c % 3; for (let k = 0; k < 9; k++) { if (b[r * 9 + k] === n || b[k * 9 + c] === n) return false; if (b[(br + Math.floor(k / 3)) * 9 + bc + k % 3] === n) return false; } return true; };
