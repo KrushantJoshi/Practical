@@ -1,6 +1,6 @@
 # TapForge 🎮
 
-A suite of **41 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
+A suite of **42 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
 
 One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for the app stores) **and web game portals** (Poki, CrazyGames, GameDistribution).
 
@@ -38,6 +38,7 @@ One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for t
 | **Bubble Pop** | Bubble shooter: pop colour clusters, drop hangers |
 | **Nonogram** | Picross: fill the grid from number clues |
 | **Mahjong** | Match free tiles; always-solvable deals |
+| **Tower of Hanoi** | Move the stack; smaller-on-larger only |
 | **Lights Out** | Flip the grid off; each tap toggles a cross |
 | **Word Search** | Find hidden words in 8 directions |
 | **Hangman** | Guess the word before the figure completes |
@@ -101,7 +102,7 @@ js/monetization.js      player-friendly ad policy (caps, remove-ads IAP)
 js/meta.js              coins + achievements (cross-game progression)
 js/themes.js            cosmetic unlockable themes (coin sink)
 js/ui.js                shared game-over dialog, toast, number formatting
-js/games/*.js           the 41 games (19 canvas + 22 DOM)
+js/games/*.js           the 42 games (19 canvas + 23 DOM)
 manifest.webmanifest    PWA install metadata
 service-worker.js       offline caching
 assets/                 CC0/OFL font + original icon  (see ASSETS.md)
