@@ -33,6 +33,9 @@ TapForge already follows this: rewarded ad = revive (opt-in), interstitial cappe
    - **Web (fastest):** deploy the folder to Netlify/Vercel/GitHub Pages — it's a PWA, installable, works offline. Submit to itch.io, CrazyGames, Poki, GameDistribution. These bring traffic *and* monetization.
    - **Stores:** `npx cap add android/ios`, build, publish to Google Play (~$25 one-time) and App Store ($99/yr).
 3. **Get players cheaply:** short vertical clips of a near-miss/high-combo on TikTok/Reels/Shorts. Hypercasual lives and dies on organic video. One clip that hits = thousands of installs free.
+   - A ready-made promo graphic was generated for this in Canva — edit it here:
+     **https://www.canva.com/d/WVtYzrIxyDKzhHx** (view: https://www.canva.com/d/veGfAjzEVwXKuIM).
+     Export it as PNG/MP4 from Canva and post it as your store screenshot + first social clip.
 4. **Measure & iterate:** watch Day-1 retention. If players don't come back day 2, fix the game before spending a cent on ads.
 
 ## Connecting a real ad network (where to edit)
