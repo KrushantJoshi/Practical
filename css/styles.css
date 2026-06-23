@@ -202,6 +202,15 @@ body {
 .card.down { background: repeating-linear-gradient(45deg, #2d3252, #2d3252 5px, #3a4070 5px, #3a4070 10px); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
 .card span:last-child { align-self: flex-end; }
 
+/* ---------- Connect Four ---------- */
+.c4 { max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.c4-msg { font-weight: 700; font-size: 18px; }
+.c4-board { display: grid; gap: 5px; width: 100%; background: #1b2a6b; padding: 8px; border-radius: 12px; }
+.c4-cell { aspect-ratio: 1; border: none; border-radius: 50%; background: #0e1020; cursor: pointer; }
+.c4-cell.you { background: radial-gradient(circle at 35% 35%, #ff7a8a, #ef476f); }
+.c4-cell.ai { background: radial-gradient(circle at 35% 35%, #ffe08a, #ffd166); }
+.c4-score { color: var(--muted); font-size: 13px; } .c4-score b { color: var(--fg); }
+
 /* ---------- Toast ---------- */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0;
   background: #fff; color: #0e1020; padding: 12px 20px; border-radius: 12px; font-weight: 700; z-index: 100;
