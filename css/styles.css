@@ -317,6 +317,18 @@ body {
 .ng-cell { aspect-ratio: 1; background: #161a30; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; color: #6b7090; font-size: 12px; padding: 0; }
 .ng-cell.fill { background: #06d6a0; } .ng-cell.mark { background: #161a30; }
 
+/* ---------- Snakes & Ladders ---------- */
+.sl { max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.sl-msg { font-weight: 700; font-size: 18px; }
+.sl-board { display: grid; grid-template-columns: repeat(10, 1fr); gap: 1px; width: 100%; background: rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
+.sl-sq { aspect-ratio: 1; position: relative; background: #161a30; display: flex; align-items: flex-start; justify-content: flex-start; }
+.sl-sq.ladder { background: #123a2a; } .sl-sq.snake { background: #3a1620; }
+.sl-n { font-size: 8px; color: var(--muted); padding: 1px 2px; }
+.sl-tok { position: absolute; width: 38%; height: 38%; border-radius: 50%; bottom: 8%; box-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+.sl-tok.you { background: #ef476f; left: 8%; } .sl-tok.ai { background: #4895ef; right: 8%; }
+.sl-foot { display: flex; align-items: center; gap: 12px; }
+.sl-die { font-size: 34px; }
+
 /* ---------- Settings ---------- */
 .set-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.06); }
 .toggle { background: #2a2f47; color: var(--fg); border: none; border-radius: 999px; padding: 8px 18px; font-weight: 700; cursor: pointer; min-width: 64px; }

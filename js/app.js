@@ -51,12 +51,13 @@ import { Mastermind } from './games/mastermind.js';
 import { Battleship } from './games/battleship.js';
 import { VideoPoker } from './games/videopoker.js';
 import { Nonogram } from './games/nonogram.js';
+import { SnakesLadders } from './games/snakesladders.js';
 
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,
   GemBlitz, SkyClimb, DashRun, StarBlaster, GridDefense, AirHockey, BubblePop, Maze, RoadCross,
   Merge2048, DailyWord, MemoryMatch, IdleForge, TicTacToe, Minesweeper, Sudoku, BlockDrop, Solitaire, ConnectFour,
-  LightsOut, Blackjack, WordSearch, Checkers, Reversi, Hangman, Mastermind, Battleship, VideoPoker, Nonogram,
+  LightsOut, Blackjack, WordSearch, Checkers, Reversi, Hangman, Mastermind, Battleship, VideoPoker, Nonogram, SnakesLadders,
 ];
 const ACCENTS = ['#ef476f', '#06d6a0', '#4895ef', '#ffd166', '#b388ff', '#ff7e6b'];
 
