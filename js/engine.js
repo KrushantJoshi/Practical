@@ -73,12 +73,31 @@ export const Engine = (() => {
     }
   }
 
+  // ---- Floating score popups ("+3", "PERFECT!", combos) -----------------
+  class Popups {
+    constructor() { this.list = []; }
+    add(x, y, text, color = '#fff', size = 24) { this.list.push({ x, y, text, color, size, life: 1 }); }
+    update(dt) { for (const p of this.list) { p.y -= 42 * dt; p.life -= dt * 1.25; } this.list = this.list.filter(p => p.life > 0); }
+    draw(ctx) {
+      ctx.textAlign = 'center';
+      for (const p of this.list) {
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.font = `800 ${p.size}px "Space Grotesk", system-ui`;
+        ctx.fillText(p.text, p.x, p.y);
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
   // ---- Game loop + canvas scaffolding -----------------------------------
   // A Game implements: init(api), update(dt), draw(ctx, api), onTap(x,y), onPointerMove?(x,y)
   function run(game, canvas) {
     const ctx = canvas.getContext('2d');
-    const api = { w: 0, h: 0, dpr: 1, particles: new Particles(), sfx, beep, haptic, store, end, score: 0 };
-    let raf = 0, last = 0, alive = true, over = false;
+    const api = { w: 0, h: 0, dpr: 1, particles: new Particles(), popups: new Popups(), sfx, beep, haptic, store, end, score: 0 };
+    api.popup = (x, y, text, color, size) => api.popups.add(x, y, text, color, size);
+    api.shake = (amount) => { shakeAmt = Math.max(shakeAmt, amount); };
+    let raf = 0, last = 0, alive = true, over = false, shakeAmt = 0;
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 3);
@@ -104,11 +123,16 @@ export const Engine = (() => {
     function frame(t) {
       if (!alive) return;
       const dt = Math.min((t - last) / 1000 || 0, 0.05); last = t;
-      api.particles.update(dt);
+      api.particles.update(dt); api.popups.update(dt);
       if (!over) game.update && game.update(dt, api);  // freeze sim on game-over until revive
-      ctx.clearRect(0, 0, api.w, api.h);
+      const sh = shakeAmt > 0.3 ? shakeAmt : 0; shakeAmt *= 0.86;
+      ctx.clearRect(-18, -18, api.w + 36, api.h + 36);
+      ctx.save();
+      if (sh) ctx.translate((Math.random() * 2 - 1) * sh, (Math.random() * 2 - 1) * sh);
       game.draw && game.draw(ctx, api);
       api.particles.draw(ctx);
+      api.popups.draw(ctx);
+      ctx.restore();
       raf = requestAnimationFrame(frame);
     }
 
@@ -116,6 +140,7 @@ export const Engine = (() => {
     function end(finalScore) {
       if (over) return;             // end() fires once per run, even if update calls it repeatedly
       over = true;
+      shakeAmt = 16;                // impact shake on death, for free, in every canvas game
       api.score = finalScore;
       const best = store.submit(game.id, finalScore);
       sfx.over(); haptic(40);

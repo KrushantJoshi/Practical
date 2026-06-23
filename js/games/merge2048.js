@@ -5,6 +5,7 @@
  */
 import { Engine } from '../engine.js';
 import { Money } from '../monetization.js';
+import { Meta } from '../meta.js';
 import { gameOverDialog } from '../ui.js';
 
 const N = 4;
@@ -102,6 +103,7 @@ export const Merge2048 = {
     }
     async function endGame() {
       over = true; S.submit('merge', score); Engine.sfx.over();
+      Meta.report('merge', { score, win: grid.some(row => row.some(v => v >= 2048)) });
       const action = await gameOverDialog({ title: 'No moves left', score, high: S.high('merge'), canRevive: !usedRevive, reviveLabel: '▶ Watch ad → Clear 4 tiles' });
       if (action === 'revive') {
         const ok = await Money.showRewarded();

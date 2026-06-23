@@ -4,6 +4,7 @@
  */
 import { Engine } from '../engine.js';
 import { Money } from '../monetization.js';
+import { Meta } from '../meta.js';
 import { gameOverDialog } from '../ui.js';
 
 const R = 9, C = 9, MINES = 10;
@@ -74,6 +75,7 @@ export const Minesweeper = {
     async function end(victory) {
       const secs = Math.floor((Date.now() - t0) / 1000);
       if (victory) { const b = S.get('mines_best', 0); if (!b || secs < b) S.set('mines_best', secs); }
+      Meta.report('mines', { win: victory });
       const action = await gameOverDialog({ title: victory ? `Cleared in ${secs}s! 💎` : '💥 Boom', canRevive: false });
       if (action === 'again') { await Money.maybeInterstitial(); reset(); }
       else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }

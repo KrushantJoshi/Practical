@@ -6,6 +6,8 @@
 import { Engine } from './engine.js';
 import { Platform } from './platform.js';
 import { Money } from './monetization.js';
+import { Meta } from './meta.js';
+import { Themes } from './themes.js';
 import { gameOverDialog } from './ui.js';
 
 // canvas games
@@ -43,6 +45,9 @@ const els = {
   title: document.getElementById('game-title'),
   sound: document.getElementById('sound-toggle'),
   noads: document.getElementById('noads'),
+  coins: document.getElementById('coins'),
+  openAch: document.getElementById('open-ach'),
+  openThemes: document.getElementById('open-themes'),
 };
 
 let controller = null;
@@ -51,6 +56,8 @@ let usedReviveThisRun = false;
 
 // ---- Hub ----------------------------------------------------------------
 function renderHub() {
+  Meta.refresh();
+  els.coins.textContent = '🪙 ' + Meta.coins();
   els.grid.innerHTML = '';
   GAMES.forEach((g, i) => {
     const card = document.createElement('button');
@@ -106,6 +113,7 @@ els.domRoot.addEventListener('exit-game', exitToHub);
 // ---- Canvas game-over flow ---------------------------------------------
 async function canvasGameOver(game, res) {
   Platform.gameplayStop();
+  Meta.report(game.id, { score: res.score });
   const canRevive = !usedReviveThisRun && !!game.revive;
   const action = await gameOverDialog({ score: res.score, best: res.best, high: res.high, canRevive });
   if (action === 'revive') {
@@ -122,7 +130,39 @@ els.sound.onclick = () => { const on = !Engine.store.get('sound', true); Engine.
 els.sound.textContent = Engine.store.get('sound', true) ? '🔊' : '🔇';
 els.noads.onclick = async () => { if (await Money.buyRemoveAds()) renderHub(); };
 
+// ---- Achievements + Themes overlays ------------------------------------
+function closableOverlay(innerHTML) {
+  const ov = document.createElement('div'); ov.className = 'over-overlay';
+  ov.innerHTML = `<div class="over-card sheet">${innerHTML}<button class="btn ghost close">Close</button></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('.close').onclick = () => { ov.remove(); renderHub(); };
+  return ov;
+}
+els.openAch.onclick = () => {
+  const rows = Meta.achievements().map(a =>
+    `<div class="ach-row ${a.done ? 'done' : ''}"><div><b>${a.done ? '🏆' : '🔒'} ${a.name}</b><small>${a.desc}</small></div><span>+${a.reward}🪙</span></div>`).join('');
+  closableOverlay(`<div class="over-title">Achievements</div><div class="ach-list">${rows}</div>`);
+};
+els.openThemes.onclick = () => {
+  const ov = closableOverlay(`<div class="over-title">Themes</div><div class="theme-grid" id="theme-grid"></div>`);
+  const grid = ov.querySelector('#theme-grid');
+  const paint = () => {
+    grid.innerHTML = '';
+    Themes.all().forEach(t => {
+      const b = document.createElement('button');
+      b.className = 'theme-card' + (t.active ? ' active' : '');
+      b.style.background = t.vars['--bg2']; b.style.borderColor = t.vars['--accent'];
+      b.innerHTML = `<span class="theme-dot" style="background:${t.vars['--accent']}"></span>
+        <b>${t.name}</b><small>${t.owned ? (t.active ? 'Active' : 'Select') : t.cost + ' 🪙'}</small>`;
+      b.onclick = async () => { await Themes.buyOrSelect(t.id); els.coins.textContent = '🪙 ' + Meta.coins(); paint(); };
+      grid.appendChild(b);
+    });
+  };
+  paint();
+};
+
 // ---- Boot: platform + PWA ----------------------------------------------
+Themes.init();
 Platform.init().finally(() => Platform.loadingFinished());
 
 if ('serviceWorker' in navigator) {

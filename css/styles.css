@@ -34,7 +34,23 @@ body {
 .screen.active { display: flex; }
 
 /* HUB */
-.hub-head { padding: max(28px, env(safe-area-inset-top)) 22px 8px; text-align: center; }
+.hub-head { padding: max(20px, env(safe-area-inset-top)) 18px 8px; text-align: center; }
+.hub-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.coins { background: var(--bg2); padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 15px; }
+.hub-bar-btns { display: flex; gap: 8px; }
+.chip { background: var(--bg2); border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; width: 40px; height: 40px; font-size: 18px; cursor: pointer; }
+.over-card.sheet { max-width: 420px; max-height: 80vh; overflow-y: auto; text-align: left; }
+.over-card.sheet .over-title { text-align: center; margin-bottom: 14px; }
+.ach-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.ach-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px; border-radius: 12px; background: var(--bg); opacity: 0.55; }
+.ach-row.done { opacity: 1; box-shadow: inset 0 0 0 1px rgba(255,209,102,0.5); }
+.ach-row small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+.ach-row span { font-weight: 800; color: #ffd166; white-space: nowrap; }
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.theme-card { border: 2px solid; border-radius: 14px; padding: 14px; color: #fff; cursor: pointer; text-align: left; }
+.theme-card.active { box-shadow: 0 0 0 2px #fff inset; }
+.theme-card b { display: block; margin: 8px 0 2px; } .theme-card small { color: rgba(255,255,255,0.7); }
+.theme-dot { display: inline-block; width: 22px; height: 22px; border-radius: 50%; }
 .logo { font-size: 40px; font-weight: 800; letter-spacing: -1px; }
 .logo span { color: var(--accent); }
 .sub { color: var(--muted); margin-top: 4px; font-size: 14px; }

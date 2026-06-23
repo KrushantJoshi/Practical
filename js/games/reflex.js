@@ -42,8 +42,10 @@ export const ReflexRing = {
       this.flash = 1;
       api.sfx.good(); api.haptic(perfect ? 25 : 12);
       const cx = api.w / 2, cy = api.h / 2, r = Math.min(api.w, api.h) * 0.36;
-      api.particles.burst(cx + Math.cos(this.angle) * r, cy + Math.sin(this.angle) * r,
-        perfect ? '#ffd166' : '#06d6a0', perfect ? 22 : 12, perfect ? 6 : 4);
+      const px = cx + Math.cos(this.angle) * r, py = cy + Math.sin(this.angle) * r;
+      api.particles.burst(px, py, perfect ? '#ffd166' : '#06d6a0', perfect ? 22 : 12, perfect ? 6 : 4);
+      if (perfect) { api.popup(px, py - 16, 'PERFECT!', '#ffd166', 22); api.shake(6); }
+      else if (this.combo >= 5 && this.combo % 5 === 0) api.popup(px, py - 16, `x${this.combo}`, '#06d6a0', 20);
       this._newTarget();
     } else {
       this.combo = 0;

@@ -35,9 +35,14 @@ export const TowerStack = {
     if (overlap <= 0) { this.alive = false; api.end(this.score); return; }
 
     const perfect = Math.abs(this.x - this.baseX) < 6;
-    if (perfect) { this.score += 3; api.sfx.good(); api.haptic(25);
-      api.particles.burst(api.w / 2, api.h - 80 - this.scroll % 1, '#ffd166', 18, 5);
-    } else { this.score += 1; api.sfx.tap(); api.haptic(12); this.bw = overlap; }
+    if (perfect) {
+      this.perfectStreak = (this.perfectStreak || 0) + 1;
+      const bonus = 3 + Math.min(this.perfectStreak, 5);
+      this.score += bonus; api.sfx.good(); api.haptic(25); api.shake(5);
+      this.bw = Math.min(api.w * 0.9, this.bw + 6); // reward precision: tower regrows slightly
+      api.particles.burst(overlapL + this.bw / 2, api.h - 80, '#ffd166', 18, 5);
+      api.popup(api.w / 2, api.h - 120, this.perfectStreak > 1 ? `PERFECT x${this.perfectStreak}` : 'PERFECT!', '#ffd166', 22);
+    } else { this.perfectStreak = 0; this.score += 1; api.sfx.tap(); api.haptic(12); this.bw = overlap; }
 
     api.score = this.score;
     this.baseX = overlapL;

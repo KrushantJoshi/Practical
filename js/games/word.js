@@ -5,6 +5,7 @@
  */
 import { Engine } from '../engine.js';
 import { Money } from '../monetization.js';
+import { Meta } from '../meta.js';
 import { toast } from '../ui.js';
 
 // A compact answer pool of common 5-letter words. Same word for everyone each day.
@@ -107,6 +108,7 @@ export const DailyWord = {
         S.set('word_lastWinDay', day);
         Engine.sfx.good();
       } else { S.set('word_streak', 0); Engine.sfx.over(); }
+      Meta.report('word', { win: result === 'win', score: result === 'win' ? (7 - guesses.length) * 5 : 0 });
       save();
       setTimeout(() => endDialog(result), 500);
     }

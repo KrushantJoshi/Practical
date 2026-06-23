@@ -4,6 +4,7 @@
  */
 import { Engine } from '../engine.js';
 import { Money } from '../monetization.js';
+import { Meta } from '../meta.js';
 import { gameOverDialog } from '../ui.js';
 
 const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
@@ -73,6 +74,7 @@ export const TicTacToe = {
       root.querySelector('#t-w').textContent = S.get('ttt_wins', 0);
       root.querySelector('#t-l').textContent = S.get('ttt_losses', 0);
       root.querySelector('#t-d').textContent = S.get('ttt_draws', 0);
+      Meta.report('tictactoe', { win: w === you });
       const action = await gameOverDialog({ title, canRevive: false });
       if (action === 'again') { await Money.maybeInterstitial(); reset(); }
       else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }

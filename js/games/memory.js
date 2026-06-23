@@ -4,6 +4,7 @@
  */
 import { Engine } from '../engine.js';
 import { Money } from '../monetization.js';
+import { Meta } from '../meta.js';
 import { gameOverDialog } from '../ui.js';
 
 const SYMBOLS = ['🍎', '🚀', '⭐', '🎲', '🔔', '🍀', '⚡', '🎯', '💎', '🔥', '🌙', '🎸', '🐱', '🍩', '🏀', '🎈'];
@@ -69,6 +70,7 @@ export const MemoryMatch = {
 
     async function winLevel() {
       S.submit('memory', level); Engine.sfx.good();
+      Meta.report('memory', { win: true, score: level * 5 });
       const action = await gameOverDialog({ title: `Level ${level} cleared!`, score: moves + ' moves', high: 'Best level: ' + S.high('memory'), reviveLabel: '', canRevive: false });
       if (action === 'again') { await Money.maybeInterstitial(); level++; moves = 0; deal(); }
       else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }

@@ -6,8 +6,8 @@ export const QuickTap = {
   id: 'quicktap',
   name: 'Quick Tap',
   tagline: 'Pop the dots before they vanish.',
-  init(api) { this.targets = []; this.score = 0; this.lives = 3; this.t = 0; this.acc = 0; },
-  revive(api) { this.lives = 2; this.targets = []; },
+  init(api) { this.targets = []; this.score = 0; this.lives = 3; this.t = 0; this.acc = 0; this.combo = 0; },
+  revive(api) { this.lives = 2; this.targets = []; this.combo = 0; },
   spawn(api) {
     const r = Math.max(22, Math.min(api.w, api.h) * 0.06);
     const x = r + Math.random() * (api.w - 2 * r);
@@ -19,8 +19,12 @@ export const QuickTap = {
     for (let i = this.targets.length - 1; i >= 0; i--) {
       const t = this.targets[i];
       if ((x - t.x) ** 2 + (y - t.y) ** 2 <= t.r * t.r) {
-        this.targets.splice(i, 1); this.score++; api.score = this.score;
+        this.combo++;
+        const gain = 1 + Math.floor(this.combo / 5);
+        this.score += gain; api.score = this.score;
         api.sfx.good(); api.haptic(10); api.particles.burst(t.x, t.y, '#06d6a0', 16, 5);
+        if (this.combo >= 5 && this.combo % 5 === 0) { api.popup(t.x, t.y - 18, `x${this.combo}!`, '#ffd166', 22); api.shake(4); }
+        else if (gain > 1) api.popup(t.x, t.y - 18, '+' + gain, '#06d6a0', 18);
         return;
       }
     }
@@ -32,7 +36,7 @@ export const QuickTap = {
     for (let i = this.targets.length - 1; i >= 0; i--) {
       const t = this.targets[i]; t.age += dt;
       if (t.age >= t.life) {
-        this.targets.splice(i, 1); this.lives--; api.sfx.bad(); api.haptic(30);
+        this.targets.splice(i, 1); this.lives--; this.combo = 0; api.sfx.bad(); api.haptic(30); api.shake(8);
         if (this.lives <= 0) return api.end(this.score);
       }
     }

@@ -10,6 +10,7 @@
  */
 import { Engine } from '../engine.js';
 import { Money } from '../monetization.js';
+import { Meta } from '../meta.js';
 import { toast, fmt } from '../ui.js';
 
 const GENERATORS = [
@@ -159,7 +160,7 @@ export const IdleForge = {
 
     render();
     return {
-      destroy() { clearInterval(tick); save(); document.removeEventListener('visibilitychange', onHide); },
+      destroy() { clearInterval(tick); save(); Meta.report('idle', {}); document.removeEventListener('visibilitychange', onHide); },
     };
   },
 };
