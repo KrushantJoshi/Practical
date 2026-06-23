@@ -187,6 +187,21 @@ body {
 .tt-controls button { flex: 1; padding: 16px 0; border: none; border-radius: 12px; background: var(--bg2); color: #fff; font-size: 20px; font-weight: 700; cursor: pointer; }
 .tt-controls button:active { background: var(--accent); }
 
+/* ---------- Solitaire ---------- */
+.sol { max-width: 520px; margin: 0 auto; }
+.sol-top { display: flex; gap: 6px; margin-bottom: 14px; }
+.sol-spacer { flex: 1; }
+.pile { width: 13%; max-width: 56px; aspect-ratio: 0.7; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+.pile.stock, .pile.fnd { background: rgba(255,255,255,0.06); border: 1px dashed rgba(255,255,255,0.2); font-size: 22px; cursor: pointer; color: var(--muted); }
+.pile.fnd.ghost-red { color: #ef476f55; } .pile.fnd.ghost { color: #ffffff44; }
+.sol-tableau { display: flex; gap: 6px; }
+.col { flex: 1; min-height: 80px; display: flex; flex-direction: column; }
+.card { aspect-ratio: 0.7; border-radius: 6px; background: #fff; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 4px 5px; font-weight: 800; font-size: clamp(11px, 3.2vw, 17px); box-shadow: 0 1px 3px rgba(0,0,0,0.4); cursor: pointer; }
+.card.red { color: #d6336c; } .card.black { color: #1a1a1a; }
+.card.down { background: repeating-linear-gradient(45deg, #2d3252, #2d3252 5px, #3a4070 5px, #3a4070 10px); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+.card span:last-child { align-self: flex-end; }
+
 /* ---------- Toast ---------- */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0;
   background: #fff; color: #0e1020; padding: 12px 20px; border-radius: 12px; font-weight: 700; z-index: 100;

@@ -34,11 +34,12 @@ import { TicTacToe } from './games/tictactoe.js';
 import { Minesweeper } from './games/mines.js';
 import { Sudoku } from './games/sudoku.js';
 import { BlockDrop } from './games/tetris.js';
+import { Solitaire } from './games/solitaire.js';
 
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,
   GemBlitz, SkyClimb, DashRun, StarBlaster,
-  Merge2048, DailyWord, MemoryMatch, IdleForge, TicTacToe, Minesweeper, Sudoku, BlockDrop,
+  Merge2048, DailyWord, MemoryMatch, IdleForge, TicTacToe, Minesweeper, Sudoku, BlockDrop, Solitaire,
 ];
 const ACCENTS = ['#ef476f', '#06d6a0', '#4895ef', '#ffd166', '#b388ff', '#ff7e6b'];
 
