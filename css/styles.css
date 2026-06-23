@@ -1,0 +1,104 @@
+/* Space Grotesk — SIL Open Font License 1.1 (free to bundle & redistribute). */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/SpaceGrotesk-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/SpaceGrotesk-Bold.ttf') format('truetype');
+}
+
+:root {
+  --bg: #0e1020;
+  --bg2: #161a30;
+  --fg: #f5f6fb;
+  --muted: #9aa0b4;
+  --accent: #ef476f;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: 'Space Grotesk', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: radial-gradient(120% 100% at 50% 0%, var(--bg2), var(--bg));
+  color: var(--fg);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Screens */
+.screen { position: fixed; inset: 0; display: none; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* HUB */
+.hub-head { padding: max(28px, env(safe-area-inset-top)) 22px 8px; text-align: center; }
+.logo { font-size: 40px; font-weight: 800; letter-spacing: -1px; }
+.logo span { color: var(--accent); }
+.sub { color: var(--muted); margin-top: 4px; font-size: 14px; }
+.grid {
+  flex: 1; display: grid; gap: 14px; padding: 18px 18px 6px;
+  grid-template-columns: 1fr; align-content: start; overflow-y: auto;
+}
+@media (min-width: 560px) { .grid { grid-template-columns: 1fr 1fr; } }
+.card {
+  text-align: left; border: none; cursor: pointer; color: var(--fg);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 22%, var(--bg2)), var(--bg2));
+  border-radius: 18px; padding: 20px; position: relative; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06); transition: transform .12s ease;
+}
+.card:active { transform: scale(0.97); }
+.card::before {
+  content: ""; position: absolute; right: -30px; top: -30px; width: 110px; height: 110px;
+  background: var(--accent); opacity: .25; border-radius: 50%; filter: blur(8px);
+}
+.card-name { font-size: 22px; font-weight: 700; }
+.card-tag { color: var(--muted); font-size: 13px; margin: 4px 0 14px; }
+.card-high { font-size: 13px; color: var(--muted); }
+.card-high b { color: var(--fg); }
+.card-play { margin-top: 10px; font-weight: 700; color: var(--accent); }
+.noads {
+  margin: 4px 18px; padding: 14px; border-radius: 14px; border: 1px dashed rgba(255,255,255,0.18);
+  background: transparent; color: var(--fg); font-weight: 600; cursor: pointer;
+}
+.hub-foot { text-align: center; color: var(--muted); font-size: 12px; padding: 12px 0 max(16px, env(safe-area-inset-bottom)); }
+
+/* PLAY */
+.play { background: var(--bg); }
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: max(10px, env(safe-area-inset-top)) 14px 10px;
+}
+.icon-btn { background: rgba(255,255,255,0.08); border: none; color: var(--fg);
+  padding: 8px 14px; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.game-title { font-weight: 700; font-size: 16px; }
+#canvas { flex: 1; width: 100%; touch-action: none; display: block; }
+
+/* Game-over overlay */
+.over-overlay, .ad-overlay {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(8,9,18,0.72); backdrop-filter: blur(6px); z-index: 50; padding: 24px;
+}
+.over-card, .ad-card {
+  background: var(--bg2); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 22px; padding: 28px; text-align: center; width: 100%; max-width: 340px;
+}
+.over-title { font-size: 22px; font-weight: 800; }
+.over-score { font-size: 64px; font-weight: 800; color: var(--accent); line-height: 1.1; margin: 6px 0; }
+.over-high { color: var(--muted); margin-bottom: 18px; }
+.over-actions { display: flex; flex-direction: column; gap: 10px; }
+.btn { border: none; border-radius: 12px; padding: 14px; font-size: 16px; font-weight: 700; cursor: pointer; color: #fff; background: var(--accent); }
+.btn.again { background: #06d6a0; color: #04231a; }
+.btn.ghost { background: rgba(255,255,255,0.08); }
+.btn.revive { background: #ffd166; color: #3a2c00; }
+
+/* Ad overlay */
+.ad-tag { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.ad-body { margin: 18px 0; color: var(--fg); opacity: .8; }
+.ad-count { font-size: 40px; font-weight: 800; margin-bottom: 16px; }
+.ad-btn { display: block; width: 100%; border: none; border-radius: 12px; padding: 13px; font-weight: 700; margin-top: 8px; cursor: pointer; }
+.ad-btn.primary { background: #ffd166; color: #3a2c00; }
+.ad-btn.primary:disabled { opacity: .5; cursor: not-allowed; }
+.ad-btn.ghost { background: rgba(255,255,255,0.08); color: var(--fg); }
