@@ -232,6 +232,16 @@ body {
 .bj-buttons .btn { flex: 1; } .bj-buttons .btn:disabled { opacity: 0.4; }
 .bj-rec { color: var(--muted); font-size: 13px; } .bj-rec b { color: var(--fg); }
 
+/* ---------- Word Search ---------- */
+.ws { max-width: 460px; margin: 0 auto; }
+.ws-board { display: grid; gap: 2px; background: var(--bg2); padding: 4px; border-radius: 8px; }
+.ws-cell { aspect-ratio: 1; border: none; background: #161a30; color: #fff; font-weight: 700; font-size: clamp(11px, 3vw, 16px); cursor: pointer; border-radius: 3px; padding: 0; }
+.ws-cell.sel { background: #4895ef; }
+.ws-cell.found { background: #06d6a0; color: #04231a; }
+.ws-words { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 14px 0; }
+.ws-words span { color: var(--muted); font-weight: 700; font-size: 14px; }
+.ws-words span.done { color: #06d6a0; text-decoration: line-through; }
+
 /* ---------- Settings ---------- */
 .set-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.06); }
 .toggle { background: #2a2f47; color: var(--fg); border: none; border-radius: 999px; padding: 8px 18px; font-weight: 700; cursor: pointer; min-width: 64px; }
