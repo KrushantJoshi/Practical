@@ -1,0 +1,11 @@
+{
+  "name": "tapforge",
+  "version": "1.0.0",
+  "description": "TapForge — a suite of 31 simple-but-addictive games (PWA + web portals + mobile).",
+  "type": "module",
+  "scripts": {
+    "test": "node test/smoke.mjs && node test/logic.mjs",
+    "serve": "python3 -m http.server 8000"
+  },
+  "license": "MIT"
+}
