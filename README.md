@@ -1,33 +1,50 @@
 # TapForge 🎮
 
-A suite of **18 simple-but-addictive games** in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
+A suite of **26 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
 
 One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for the app stores) **and web game portals** (Poki, CrazyGames, GameDistribution).
 
 ## The games
 
-| # | Game | Genre | One-line |
-|---|---|---|---|
-| 1 | **Reflex Ring** | arcade | Tap when the marker crosses the red arc (PERFECT combos) |
-| 2 | **Tower Stack** | arcade | Drop blocks; perfect stacks regrow the tower |
-| 3 | **Color Rush** | arcade | Tap the side matching the falling dot |
-| 4 | **Sky Hop** | arcade | One tap to fly through the gaps |
-| 5 | **Neon Snake** | arcade | Swipe to steer, eat, grow |
-| 6 | **Dodge** | arcade | Slide through the falling storm |
-| 7 | **Brick Out** | arcade | Bounce the ball, break the bricks, level up |
-| 8 | **Echo** | memory | Watch the colour+tone pattern, repeat it |
-| 9 | **Quick Tap** | arcade | Pop dots before they vanish (combo multiplier) |
-| 10 | **Tap Tiles** | arcade | Piano-tiles: tap the dark tiles, never miss |
-| 11 | **Gem Blitz** | match-3 | Swipe to match 3+, cascade combos (score attack) |
-| 12 | **Sky Climb** | platformer | Doodle-jump: bounce up, springs, moving platforms |
-| 13 | **Merge 2048** | puzzle | Swipe to merge tiles to 2048+ |
-| 14 | **Daily Word** | puzzle | A Wordle-style daily word + streaks |
-| 15 | **Memory Match** | puzzle | Flip cards, find the pairs, rising levels |
-| 16 | **Idle Forge** | idle | Tap, automate, prestige, offline earnings |
-| 17 | **Tic-Tac-Toe** | strategy | vs a minimax AI; W/L/D record |
-| 18 | **Minesweeper** | puzzle | 9×9 classic, flag mode, best-time tracking |
+**Quick arcade / reflex**
+| Game | One-line |
+|---|---|
+| **Reflex Ring** | Tap when the marker crosses the red arc (PERFECT combos) |
+| **Tower Stack** | Drop blocks; perfect stacks regrow the tower |
+| **Color Rush** | Tap the side matching the falling dot |
+| **Sky Hop** | One tap to fly through the gaps |
+| **Neon Snake** | Swipe to steer, eat, grow |
+| **Dodge** | Slide through the falling storm |
+| **Brick Out** | Bounce the ball, break the bricks, level up |
+| **Quick Tap** | Pop dots before they vanish (combo multiplier) |
+| **Tap Tiles** | Piano-tiles: tap the dark tiles, never miss |
+| **Dash Run** | Endless runner with double-jump |
+| **Sky Climb** | Doodle-jump platformer: springs, moving platforms |
+| **Echo** | Memory: watch the colour+tone pattern, repeat it |
 
-Why these? Research (see [MONETIZATION.md](./MONETIZATION.md)) shows the most *addictive yet simple* genres are **hyper-casual arcade**, **puzzle/match-3** (the #1 download & top-grossing casual genres), and **idle/incremental** (the highest retention). The mix covers quick-session play, daily-habit retention (Daily Word streaks), and long-term progression (Idle Forge).
+**Puzzle / brain**
+| Game | One-line |
+|---|---|
+| **Gem Blitz** | Match-3: swipe to match 3+, cascade combos |
+| **Merge 2048** | Swipe to merge tiles to 2048+ |
+| **Daily Word** | Wordle-style daily word + streaks |
+| **Memory Match** | Flip cards, find the pairs, rising levels |
+| **Minesweeper** | 9×9 classic, flag mode, best-time tracking |
+| **Sudoku** | Generated puzzles, live error highlighting |
+| **Block Drop** | Full Tetris: rotation, line clears, speed curve |
+| **Solitaire** | Klondike with smart tap-to-move |
+
+**Strategy / action (deeper)**
+| Game | One-line |
+|---|---|
+| **Idle Forge** | Idle/incremental: tap, automate, prestige, offline earnings |
+| **Tic-Tac-Toe** | vs a minimax AI; W/L/D record |
+| **Connect Four** | vs a depth-5 alpha-beta AI |
+| **Star Blaster** | Vertical space shooter with escalating waves |
+| **Grid Defense** | Tower defense: build, auto-target, survive waves |
+| **Air Hockey** | Puck physics vs a defending/attacking AI |
+
+Why these? Research (see [MONETIZATION.md](./MONETIZATION.md)) shows the most *addictive yet simple* genres are **hyper-casual arcade**, **puzzle/match-3** (the #1 download & top-grossing casual genres), and **idle/incremental** (the highest retention) — plus deeper strategy/action titles for longer sessions. The mix covers quick-session play, daily-habit retention (Daily Word streaks), and long-term progression (Idle Forge, Grid Defense).
 
 ## Engagement features (across every game)
 
@@ -69,7 +86,7 @@ js/monetization.js      player-friendly ad policy (caps, remove-ads IAP)
 js/meta.js              coins + achievements (cross-game progression)
 js/themes.js            cosmetic unlockable themes (coin sink)
 js/ui.js                shared game-over dialog, toast, number formatting
-js/games/*.js           the 18 games (12 canvas + 6 DOM)
+js/games/*.js           the 26 games (16 canvas + 10 DOM)
 manifest.webmanifest    PWA install metadata
 service-worker.js       offline caching
 assets/                 CC0/OFL font + original icon  (see ASSETS.md)
