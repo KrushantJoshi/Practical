@@ -1,5 +1,5 @@
 /* Offline-first cache so TapForge works with no connection and loads instantly. */
-const CACHE = 'tapforge-v2';
+const CACHE = 'tapforge-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -21,6 +21,10 @@ const ASSETS = [
   './js/games/word.js',
   './js/games/memory.js',
   './js/games/idle.js',
+  './js/games/quicktap.js',
+  './js/games/taptiles.js',
+  './js/games/tictactoe.js',
+  './js/games/mines.js',
   './manifest.webmanifest',
   './assets/icon.svg',
   './assets/fonts/SpaceGrotesk-Medium.ttf',
