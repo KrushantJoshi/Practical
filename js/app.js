@@ -21,6 +21,8 @@ import { BrickOut } from './games/brickout.js';
 import { Echo } from './games/simon.js';
 import { QuickTap } from './games/quicktap.js';
 import { TapTiles } from './games/taptiles.js';
+import { GemBlitz } from './games/match3.js';
+import { SkyClimb } from './games/skyclimb.js';
 // dom games
 import { Merge2048 } from './games/merge2048.js';
 import { DailyWord } from './games/word.js';
@@ -31,6 +33,7 @@ import { Minesweeper } from './games/mines.js';
 
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,
+  GemBlitz, SkyClimb,
   Merge2048, DailyWord, MemoryMatch, IdleForge, TicTacToe, Minesweeper,
 ];
 const ACCENTS = ['#ef476f', '#06d6a0', '#4895ef', '#ffd166', '#b388ff', '#ff7e6b'];
