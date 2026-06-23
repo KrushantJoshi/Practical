@@ -65,6 +65,19 @@ const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   const nb = _test.apply(b, 2, 3, 1, moves.get(k));
   ck('reversi flips the flanked disc', nb[3][3] === 1);
 }
+// ---- Mastermind feedback (black/white pegs) ----
+{
+  const { _test } = await import('../js/games/mastermind.js');
+  ck('mm all correct = 4 black', _test.feedback([0, 1, 2, 3], [0, 1, 2, 3]).black === 4);
+  ck('mm swapped = 0 black 2 white', (() => { const f = _test.feedback([0, 1, 2, 3], [1, 0, 2, 3]); return f.black === 2 && f.white === 2; })());
+  ck('mm dup not overcounted', (() => { const f = _test.feedback([0, 0, 1, 2], [0, 3, 3, 3]); return f.black === 1 && f.white === 0; })());
+}
+// ---- Battleship fleet placement ----
+{
+  const { _test } = await import('../js/games/battleship.js');
+  const g = _test.placeFleet();
+  ck('battleship places full fleet tonnage', _test.shipCells(g) === _test.FLEET.reduce((a, b) => a + b, 0));
+}
 // ---- Sudoku generator validity ----
 {
   const ok = (b, i, n) => { const r = Math.floor(i / 9), c = i % 9, br = r - r % 3, bc = c - c % 3; for (let k = 0; k < 9; k++) { if (b[r * 9 + k] === n || b[k * 9 + c] === n) return false; if (b[(br + Math.floor(k / 3)) * 9 + bc + k % 3] === n) return false; } return true; };
