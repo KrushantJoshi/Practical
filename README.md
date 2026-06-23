@@ -1,6 +1,6 @@
 # TapForge 🎮
 
-A suite of **33 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
+A suite of **35 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
 
 One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for the app stores) **and web game portals** (Poki, CrazyGames, GameDistribution).
 
@@ -21,6 +21,8 @@ One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for t
 | **Dash Run** | Endless runner with double-jump |
 | **Sky Climb** | Doodle-jump platformer: springs, moving platforms |
 | **Echo** | Memory: watch the colour+tone pattern, repeat it |
+| **Maze** | Swipe through a generated maze to the exit |
+| **Road Cross** | Frogger-style: hop across the traffic |
 
 **Puzzle / brain**
 | Game | One-line |
@@ -93,7 +95,7 @@ js/monetization.js      player-friendly ad policy (caps, remove-ads IAP)
 js/meta.js              coins + achievements (cross-game progression)
 js/themes.js            cosmetic unlockable themes (coin sink)
 js/ui.js                shared game-over dialog, toast, number formatting
-js/games/*.js           the 33 games (17 canvas + 16 DOM)
+js/games/*.js           the 35 games (19 canvas + 16 DOM)
 manifest.webmanifest    PWA install metadata
 service-worker.js       offline caching
 assets/                 CC0/OFL font + original icon  (see ASSETS.md)

@@ -45,10 +45,12 @@ import { WordSearch } from './games/wordsearch.js';
 import { Checkers } from './games/checkers.js';
 import { Reversi } from './games/reversi.js';
 import { Hangman } from './games/hangman.js';
+import { Maze } from './games/maze.js';
+import { RoadCross } from './games/roadcross.js';
 
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,
-  GemBlitz, SkyClimb, DashRun, StarBlaster, GridDefense, AirHockey, BubblePop,
+  GemBlitz, SkyClimb, DashRun, StarBlaster, GridDefense, AirHockey, BubblePop, Maze, RoadCross,
   Merge2048, DailyWord, MemoryMatch, IdleForge, TicTacToe, Minesweeper, Sudoku, BlockDrop, Solitaire, ConnectFour,
   LightsOut, Blackjack, WordSearch, Checkers, Reversi, Hangman,
 ];

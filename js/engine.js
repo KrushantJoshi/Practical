@@ -117,8 +117,10 @@ export const Engine = (() => {
     };
     const tap = (e) => { e.preventDefault(); if (over) return; const p = pos(e); game.onTap && game.onTap(p.x, p.y, api); };
     const move = (e) => { const p = pos(e); game.onPointerMove && game.onPointerMove(p.x, p.y, api); };
+    const up = (e) => { if (over) return; const p = pos(e); game.onPointerUp && game.onPointerUp(p.x, p.y, api); };
     canvas.addEventListener('pointerdown', tap);
     canvas.addEventListener('pointermove', move);
+    canvas.addEventListener('pointerup', up);
 
     function frame(t) {
       if (!alive) return;
@@ -152,6 +154,7 @@ export const Engine = (() => {
       window.removeEventListener('resize', resize);
       canvas.removeEventListener('pointerdown', tap);
       canvas.removeEventListener('pointermove', move);
+      canvas.removeEventListener('pointerup', up);
     }
 
     resize();

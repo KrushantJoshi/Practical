@@ -12,6 +12,7 @@ const CANVAS = [
   ['snake', 'NeonSnake'], ['dodge', 'Dodge'], ['brickout', 'BrickOut'], ['simon', 'Echo'],
   ['quicktap', 'QuickTap'], ['taptiles', 'TapTiles'], ['match3', 'GemBlitz'], ['skyclimb', 'SkyClimb'],
   ['dashrun', 'DashRun'], ['shooter', 'StarBlaster'], ['towerdefense', 'GridDefense'], ['airhockey', 'AirHockey'], ['bubble', 'BubblePop'],
+  ['maze', 'Maze'], ['roadcross', 'RoadCross'],
 ];
 const DOM = [
   ['merge2048', 'Merge2048'], ['word', 'DailyWord'], ['memory', 'MemoryMatch'], ['idle', 'IdleForge'],
