@@ -27,6 +27,7 @@ import { DashRun } from './games/dashrun.js';
 import { StarBlaster } from './games/shooter.js';
 import { GridDefense } from './games/towerdefense.js';
 import { AirHockey } from './games/airhockey.js';
+import { BubblePop } from './games/bubble.js';
 // dom games
 import { Merge2048 } from './games/merge2048.js';
 import { DailyWord } from './games/word.js';
@@ -41,7 +42,7 @@ import { ConnectFour } from './games/connect4.js';
 
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,
-  GemBlitz, SkyClimb, DashRun, StarBlaster, GridDefense, AirHockey,
+  GemBlitz, SkyClimb, DashRun, StarBlaster, GridDefense, AirHockey, BubblePop,
   Merge2048, DailyWord, MemoryMatch, IdleForge, TicTacToe, Minesweeper, Sudoku, BlockDrop, Solitaire, ConnectFour,
 ];
 const ACCENTS = ['#ef476f', '#06d6a0', '#4895ef', '#ffd166', '#b388ff', '#ff7e6b'];
