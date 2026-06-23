@@ -211,6 +211,27 @@ body {
 .c4-cell.ai { background: radial-gradient(circle at 35% 35%, #ffe08a, #ffd166); }
 .c4-score { color: var(--muted); font-size: 13px; } .c4-score b { color: var(--fg); }
 
+/* ---------- Lights Out ---------- */
+.lo { max-width: 380px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.lo-top { color: var(--muted); font-weight: 700; } .lo-top b { color: var(--fg); }
+.lo-board { display: grid; gap: 8px; width: 100%; }
+.lo-cell { aspect-ratio: 1; border: none; border-radius: 12px; background: #20243a; cursor: pointer; transition: background .12s; }
+.lo-cell.on { background: radial-gradient(circle at 35% 35%, #ffe89a, #ffd166); box-shadow: 0 0 14px rgba(255,209,102,0.6); }
+
+/* ---------- Blackjack ---------- */
+.bj { max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.bj-area { width: 100%; text-align: center; }
+.bj-label { color: var(--muted); font-size: 13px; margin-bottom: 6px; } .bj-label span { color: #fff; font-weight: 800; }
+.bj-cards { display: flex; gap: 6px; justify-content: center; min-height: 76px; }
+.bjc { width: 52px; aspect-ratio: 0.7; border-radius: 8px; background: #fff; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 6px; font-weight: 800; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+.bjc span:last-child { align-self: flex-end; }
+.bjc.red { color: #d6336c; } .bjc.black { color: #1a1a1a; }
+.bjc.back { background: repeating-linear-gradient(45deg, #2d3252, #2d3252 5px, #3a4070 5px, #3a4070 10px); }
+.bj-msg { font-weight: 800; font-size: 20px; min-height: 24px; }
+.bj-buttons { display: flex; gap: 8px; width: 100%; }
+.bj-buttons .btn { flex: 1; } .bj-buttons .btn:disabled { opacity: 0.4; }
+.bj-rec { color: var(--muted); font-size: 13px; } .bj-rec b { color: var(--fg); }
+
 /* ---------- Settings ---------- */
 .set-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.06); }
 .toggle { background: #2a2f47; color: var(--fg); border: none; border-radius: 999px; padding: 8px 18px; font-weight: 700; cursor: pointer; min-width: 64px; }
