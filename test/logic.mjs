@@ -78,6 +78,22 @@ const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   const g = _test.placeFleet();
   ck('battleship places full fleet tonnage', _test.shipCells(g) === _test.FLEET.reduce((a, b) => a + b, 0));
 }
+// ---- Video Poker hand evaluator ----
+{
+  const { _test } = await import('../js/games/videopoker.js');
+  const h = (...cs) => cs.map(x => ({ r: x.slice(0, -1), s: '♠♥♦♣'.indexOf(x.slice(-1)) }));
+  ck('poker royal flush', _test.evaluate(h('10♠', 'J♠', 'Q♠', 'K♠', 'A♠')).tier === 9);
+  ck('poker full house', _test.evaluate(h('3♠', '3♥', '3♦', 'K♠', 'K♥')).tier === 6);
+  ck('poker wheel straight', _test.evaluate(h('A♠', '2♥', '3♦', '4♠', '5♥')).tier === 4);
+  ck('poker jacks-or-better', _test.evaluate(h('J♠', 'J♥', '3♦', '7♠', '9♥')).tier === 1);
+  ck('poker low pair = nothing', _test.evaluate(h('5♠', '5♥', '3♦', '7♠', '9♥')).tier === 0);
+}
+// ---- Nonogram clue derivation ----
+{
+  const { _test } = await import('../js/games/nonogram.js');
+  ck('nonogram clues runs', JSON.stringify(_test.clues([1, 1, 0, 1, 1, 1, 0, 0])) === JSON.stringify([2, 3]));
+  ck('nonogram empty line = [0]', JSON.stringify(_test.clues([0, 0, 0])) === JSON.stringify([0]));
+}
 // ---- Sudoku generator validity ----
 {
   const ok = (b, i, n) => { const r = Math.floor(i / 9), c = i % 9, br = r - r % 3, bc = c - c % 3; for (let k = 0; k < 9; k++) { if (b[r * 9 + k] === n || b[k * 9 + c] === n) return false; if (b[(br + Math.floor(k / 3)) * 9 + bc + k % 3] === n) return false; } return true; };

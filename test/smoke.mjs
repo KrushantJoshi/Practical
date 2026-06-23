@@ -19,7 +19,7 @@ const DOM = [
   ['tictactoe', 'TicTacToe'], ['mines', 'Minesweeper'], ['sudoku', 'Sudoku'], ['tetris', 'BlockDrop'],
   ['solitaire', 'Solitaire'], ['connect4', 'ConnectFour'], ['lightsout', 'LightsOut'], ['blackjack', 'Blackjack'],
   ['wordsearch', 'WordSearch'], ['checkers', 'Checkers'], ['reversi', 'Reversi'], ['hangman', 'Hangman'],
-  ['mastermind', 'Mastermind'], ['battleship', 'Battleship'],
+  ['mastermind', 'Mastermind'], ['battleship', 'Battleship'], ['videopoker', 'VideoPoker'], ['nonogram', 'Nonogram'],
 ];
 
 let err = 0;

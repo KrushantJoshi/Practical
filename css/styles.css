@@ -296,6 +296,27 @@ body {
 .bs-cell.ship { background: #4a5578; } .bs-cell.miss { background: #2a3052; } .bs-cell.miss::after { content: '·'; color: #fff; display: block; text-align: center; }
 .bs-cell.hit { background: #ef476f; }
 
+/* ---------- Video Poker ---------- */
+.vp { max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.vp-msg { font-weight: 800; font-size: 18px; min-height: 22px; }
+.vp-hand { display: flex; gap: 6px; }
+.vpc { position: relative; width: 60px; aspect-ratio: 0.7; border-radius: 8px; background: #fff; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 6px; font-weight: 800; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+.vpc span:last-of-type { align-self: flex-end; }
+.vpc.red { color: #d6336c; } .vpc.black { color: #1a1a1a; }
+.vpc.held { outline: 3px solid #06d6a0; }
+.vpc em { position: absolute; bottom: 2px; left: 0; right: 0; text-align: center; font-style: normal; font-size: 9px; color: #06d6a0; }
+.vp-pay { color: var(--muted); font-size: 11px; text-align: center; }
+
+/* ---------- Nonogram ---------- */
+.ng { max-width: 440px; margin: 0 auto; }
+.ng-bar { display: flex; gap: 8px; margin-bottom: 10px; }
+.ng-grid { display: grid; gap: 1px; }
+.ng-corner { background: transparent; }
+.ng-colclue { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; font-size: 11px; color: var(--muted); font-weight: 700; }
+.ng-rowclue { display: flex; align-items: center; justify-content: flex-end; gap: 3px; font-size: 11px; color: var(--muted); font-weight: 700; padding-right: 4px; }
+.ng-cell { aspect-ratio: 1; background: #161a30; border: 1px solid rgba(255,255,255,0.06); cursor: pointer; color: #6b7090; font-size: 12px; padding: 0; }
+.ng-cell.fill { background: #06d6a0; } .ng-cell.mark { background: #161a30; }
+
 /* ---------- Settings ---------- */
 .set-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.06); }
 .toggle { background: #2a2f47; color: var(--fg); border: none; border-radius: 999px; padding: 8px 18px; font-weight: 700; cursor: pointer; min-width: 64px; }
