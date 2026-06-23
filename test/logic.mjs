@@ -94,6 +94,22 @@ const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   ck('nonogram clues runs', JSON.stringify(_test.clues([1, 1, 0, 1, 1, 1, 0, 0])) === JSON.stringify([2, 3]));
   ck('nonogram empty line = [0]', JSON.stringify(_test.clues([0, 0, 0])) === JSON.stringify([0]));
 }
+// ---- Mahjong: generated board is solvable (replay peel order) ----
+{
+  const { _test } = await import('../js/games/mahjong.js');
+  const g = _test.generate();
+  ck('mahjong generates a board', !!g && g.order.length > 0);
+  if (g) {
+    const occ = new Set(g.slots.map(_test.id));
+    let okOrder = true;
+    for (const [a, b] of g.order) {
+      const sa = g.slots.find(s => _test.id(s) === a), sb = g.slots.find(s => _test.id(s) === b);
+      if (!occ.has(a) || !occ.has(b) || !_test.isFree(sa, occ) || !_test.isFree(sb, occ) || g.sym[a] !== g.sym[b]) { okOrder = false; break; }
+      occ.delete(a); occ.delete(b);
+    }
+    ck('mahjong peel order solves the board', okOrder && occ.size === 0);
+  }
+}
 // ---- Sudoku generator validity ----
 {
   const ok = (b, i, n) => { const r = Math.floor(i / 9), c = i % 9, br = r - r % 3, bc = c - c % 3; for (let k = 0; k < 9; k++) { if (b[r * 9 + k] === n || b[k * 9 + c] === n) return false; if (b[(br + Math.floor(k / 3)) * 9 + bc + k % 3] === n) return false; } return true; };
