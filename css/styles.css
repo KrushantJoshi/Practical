@@ -164,6 +164,21 @@ body {
 .ms-cell { aspect-ratio: 1; border: none; border-radius: 4px; background: #2a3052; color: transparent; font-weight: 800; font-size: 16px; cursor: pointer; padding: 0; }
 .ms-cell.open { background: #161a30; }
 
+/* ---------- Sudoku ---------- */
+.sdk { max-width: 440px; margin: 0 auto; }
+.sdk-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; color: var(--muted); font-weight: 700; }
+.sdk-board { display: grid; grid-template-columns: repeat(9, 1fr); gap: 1px; background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.3); border-radius: 6px; overflow: hidden; aspect-ratio: 1; }
+.sdk-cell { border: none; background: var(--bg2); color: var(--accent); font-size: 18px; font-weight: 700; cursor: pointer; padding: 0; }
+.sdk-cell.given { color: #fff; background: #20253f; }
+.sdk-cell.sel { background: #34406e; }
+.sdk-cell.good { color: #06d6a0; }
+.sdk-cell.wrong { color: #ef476f; }
+.sdk-cell.br { border-right: 2px solid rgba(255,255,255,0.3); }
+.sdk-cell.bb { border-bottom: 2px solid rgba(255,255,255,0.3); }
+.sdk-pad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 12px; }
+.sdk-key { padding: 14px 0; border: none; border-radius: 10px; background: var(--bg2); color: #fff; font-size: 18px; font-weight: 700; cursor: pointer; }
+.sdk-key.erase { background: #2a2f47; }
+
 /* ---------- Toast ---------- */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 20px); opacity: 0;
   background: #fff; color: #0e1020; padding: 12px 20px; border-radius: 12px; font-weight: 700; z-index: 100;
