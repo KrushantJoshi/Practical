@@ -1,51 +1,66 @@
 # TapForge 🎮
 
-Three quick, fair one-tap arcade games in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, works offline.
+A suite of **12 simple, addictive games** in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
 
-| Game | One-line | How to play |
-|---|---|---|
-| **Reflex Ring** | timing + combos | Tap when the marker crosses the red arc |
-| **Tower Stack** | the classic stacker | Tap to drop each sliding block |
-| **Color Rush** | split-second matching | Tap the side that matches the falling dot |
+One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for the app stores) **and web game portals** (Poki, CrazyGames, GameDistribution).
+
+## The games
+
+| # | Game | Genre | One-line |
+|---|---|---|---|
+| 1 | **Reflex Ring** | arcade | Tap when the marker crosses the red arc |
+| 2 | **Tower Stack** | arcade | Tap to drop each sliding block |
+| 3 | **Color Rush** | arcade | Tap the side matching the falling dot |
+| 4 | **Sky Hop** | arcade | One tap to fly through the gaps |
+| 5 | **Neon Snake** | arcade | Swipe to steer, eat, grow |
+| 6 | **Dodge** | arcade | Slide through the falling storm |
+| 7 | **Brick Out** | arcade | Bounce the ball, break the bricks |
+| 8 | **Echo** | memory | Watch the colour pattern, repeat it |
+| 9 | **Merge 2048** | puzzle | Swipe to merge tiles to 2048+ |
+| 10 | **Daily Word** | puzzle | A Wordle-style daily word + streaks |
+| 11 | **Memory Match** | puzzle | Flip cards, find the pairs |
+| 12 | **Idle Forge** | idle | Tap, automate, prestige forever |
+
+Why these? Research (see [MONETIZATION.md](./MONETIZATION.md)) shows the most *addictive yet simple* genres are **hyper-casual arcade**, **puzzle** (the #1 download genre), and **idle/incremental** (the highest retention). The mix covers quick-session play, daily-habit retention (Daily Word streaks), and long-term progression (Idle Forge).
 
 ## Run it
 
 It's a static site — no install, no build:
 
 ```bash
-# any static server works; pick one
 python3 -m http.server 8000
-# then open http://localhost:8000 on your phone or browser
+# open http://localhost:8000 on your phone or browser
 ```
 
-Or just open `index.html`. On a phone, **Add to Home Screen** to install it as a real app (it's a PWA — works offline after first load).
+On a phone, **Add to Home Screen** to install it as a real app (PWA — works offline after first load).
 
-## Why these games
+## Publish & earn everywhere
 
-Hyper-casual one-tap games are in extreme demand and dead simple — perfect for fast, fair monetization. Each game is skill-based and instantly understandable. The fun is never gated behind money.
+The same build targets every channel via one switch — see **[PLATFORMS.md](./PLATFORMS.md)** for step-by-step:
 
-## Making money from it
+- **Web portals** (free traffic + revenue share): `?platform=poki` / `crazygames` / `gamedistribution`
+- **Mobile app**: wrap with Capacitor → AdMob ads + store IAP
+- **Plain web**: deploy the folder to Netlify/Vercel/GitHub Pages
 
-See **[MONETIZATION.md](./MONETIZATION.md)** — an honest, research-backed playbook: which ad types players reward (opt-in rewarded video, capped interstitials, one-time remove-ads), where to publish for free traffic, and exactly which lines to edit to plug in a real ad network.
+How to make money respectfully is in **[MONETIZATION.md](./MONETIZATION.md)**.
 
 ## How it's built
 
 ```
-index.html              app shell (hub + play screen)
+index.html              shell (hub + canvas + dom game container)
 css/styles.css          all styling
-js/engine.js            shared loop, input, particles, WebAudio, storage
-js/monetization.js      ethical ad/IAP layer (simulated now, live hooks marked)
-js/games/*.js           the three games
+js/engine.js            shared loop, input, particles, WebAudio, storage  (canvas games)
+js/platform.js          one ad/lifecycle API → AdMob / Poki / CrazyGames / GameDistribution / sim
+js/monetization.js      player-friendly ad policy (caps, remove-ads IAP)
+js/ui.js                shared game-over dialog, toast, number formatting
+js/games/*.js           the 12 games (8 canvas + 4 DOM)
 manifest.webmanifest    PWA install metadata
 service-worker.js       offline caching
-assets/                 icon + any CC0 assets
+assets/                 CC0/OFL font + original icon  (see ASSETS.md)
 ```
 
-No frameworks, no dependencies, no tracking. Graphics are drawn on canvas and
-sound is generated with the Web Audio API, so the base game ships with **zero
-licensed assets** — anything in `assets/` is public-domain/CC0 (see
-[ASSETS.md](./ASSETS.md)).
+No frameworks, no tracking. Graphics are drawn on canvas, sound is synthesized with the Web Audio API — so the base game ships with **zero licensed assets**. See [ASSETS.md](./ASSETS.md).
 
 ## License
 
-Code is MIT (see [LICENSE](./LICENSE)). Bundled assets are CC0 / public domain.
+Code is MIT (see [LICENSE](./LICENSE)). Bundled font is SIL OFL; other assets are CC0.

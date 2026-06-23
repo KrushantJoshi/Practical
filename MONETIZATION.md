@@ -40,11 +40,24 @@ TapForge already follows this: rewarded ad = revive (opt-in), interstitial cappe
 
 ## Connecting a real ad network (where to edit)
 
-Open `js/monetization.js` and replace the `simulateAd(...)` calls at each
-`// >>> LIVE AD HOOK` marker with your network's call. The function contracts
-(`showRewarded()` resolves `true` when the reward is earned, `buyRemoveAds()`
-resolves `true` on purchase) already match how AdMob, RevenueCat, and the web
-SDKs work — so it's a drop-in.
+Ad calls live in **`js/platform.js`**, which already has working adapters for
+**AdMob (mobile), Poki, CrazyGames, and GameDistribution** — all behind one API
+(`rewarded()`, `interstitial()`, `gameplayStart/Stop()`). Pick the target with
+`?platform=poki` (etc.) or let it auto-detect (Capacitor → AdMob). Drop your ad
+unit IDs into the AdMob adapter and add each portal's `<script>` tag. The
+player-friendly *policy* (rewarded = opt-in revive/2×, interstitial capped to
+every 3rd game-over, one-time remove-ads) lives in `js/monetization.js`.
+
+Full per-platform steps — web portals **and** the Capacitor/AdMob mobile wrapper
+— are in **[PLATFORMS.md](./PLATFORMS.md)**.
+
+## The 12 games and how each earns
+
+- **Arcade** (Reflex Ring, Tower Stack, Color Rush, Sky Hop, Neon Snake, Dodge, Brick Out): rewarded "revive" on game-over + capped interstitials. High session count = lots of rewarded impressions.
+- **Echo / Memory Match**: same revive/level flow, calmer pace, great Day-1 retention.
+- **Merge 2048**: rewarded "clear 4 tiles" revive — players gladly watch to save a long run.
+- **Daily Word**: the retention engine. A daily streak brings players back every day; monetize the daily visit with one capped interstitial and (later) a cosmetic theme pack.
+- **Idle Forge**: the LTV engine. Opt-in rewarded **2× boost** and **double offline earnings** — idle players watch these willingly because they're pure value, never required.
 
 ## What I will NOT add (and why it makes more money long-term)
 

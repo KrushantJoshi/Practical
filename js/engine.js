@@ -77,7 +77,7 @@ export const Engine = (() => {
   // A Game implements: init(api), update(dt), draw(ctx, api), onTap(x,y), onPointerMove?(x,y)
   function run(game, canvas) {
     const ctx = canvas.getContext('2d');
-    const api = { w: 0, h: 0, dpr: 1, particles: new Particles(), sfx, haptic, store, end, score: 0 };
+    const api = { w: 0, h: 0, dpr: 1, particles: new Particles(), sfx, beep, haptic, store, end, score: 0 };
     let raf = 0, last = 0, alive = true, over = false;
 
     function resize() {

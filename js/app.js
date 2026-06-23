@@ -1,20 +1,40 @@
 /*
- * app.js — the shell. Renders the game hub, launches games, runs the
- * game-over flow (with opt-in rewarded revive), and wires up the PWA.
+ * app.js — the shell. Renders the hub, launches canvas *and* DOM games,
+ * runs the shared game-over flow (opt-in rewarded revive), drives the
+ * platform lifecycle (Poki/CrazyGames/GameDistribution/AdMob), and the PWA.
  */
 import { Engine } from './engine.js';
+import { Platform } from './platform.js';
 import { Money } from './monetization.js';
+import { gameOverDialog } from './ui.js';
+
+// canvas games
 import { ReflexRing } from './games/reflex.js';
 import { TowerStack } from './games/stack.js';
 import { ColorRush } from './games/colormatch.js';
+import { SkyHop } from './games/flappy.js';
+import { NeonSnake } from './games/snake.js';
+import { Dodge } from './games/dodge.js';
+import { BrickOut } from './games/brickout.js';
+import { Echo } from './games/simon.js';
+// dom games
+import { Merge2048 } from './games/merge2048.js';
+import { DailyWord } from './games/word.js';
+import { MemoryMatch } from './games/memory.js';
+import { IdleForge } from './games/idle.js';
 
-const GAMES = [ReflexRing, TowerStack, ColorRush];
+const GAMES = [
+  ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo,
+  Merge2048, DailyWord, MemoryMatch, IdleForge,
+];
+const ACCENTS = ['#ef476f', '#06d6a0', '#4895ef', '#ffd166', '#b388ff', '#ff7e6b'];
 
 const els = {
   hub: document.getElementById('hub'),
   play: document.getElementById('play'),
   grid: document.getElementById('grid'),
   canvas: document.getElementById('canvas'),
+  domRoot: document.getElementById('dom-root'),
   back: document.getElementById('back'),
   title: document.getElementById('game-title'),
   sound: document.getElementById('sound-toggle'),
@@ -22,6 +42,7 @@ const els = {
 };
 
 let controller = null;
+let currentGame = null;
 let usedReviveThisRun = false;
 
 // ---- Hub ----------------------------------------------------------------
@@ -30,11 +51,12 @@ function renderHub() {
   GAMES.forEach((g, i) => {
     const card = document.createElement('button');
     card.className = 'card';
-    card.style.setProperty('--accent', ['#ef476f', '#06d6a0', '#4895ef'][i % 3]);
+    card.style.setProperty('--accent', ACCENTS[i % ACCENTS.length]);
+    const stat = g.stat ? g.stat(Engine.store) : ('Best: ' + Engine.store.high(g.id));
     card.innerHTML = `
       <div class="card-name">${g.name}</div>
       <div class="card-tag">${g.tagline}</div>
-      <div class="card-high">Best: <b>${Engine.store.high(g.id)}</b></div>
+      <div class="card-high">${stat}</div>
       <div class="card-play">Play ▸</div>`;
     card.onclick = () => launch(g);
     els.grid.appendChild(card);
@@ -42,77 +64,68 @@ function renderHub() {
   els.noads.style.display = Money.state.removeAds ? 'none' : 'block';
 }
 
-// ---- Launch / play ------------------------------------------------------
+// ---- Launch / exit ------------------------------------------------------
 function launch(game) {
+  currentGame = game;
+  usedReviveThisRun = false;
   els.hub.classList.remove('active');
   els.play.classList.add('active');
   els.title.textContent = game.name;
-  usedReviveThisRun = false;
-  if (controller) controller.destroy();
-  controller = Engine.run(game, els.canvas);
-  controller.onGameOver((res) => gameOver(game, res));
+  if (controller) { controller.destroy(); controller = null; }
+  Platform.gameplayStart();
+
+  if (game.type === 'dom') {
+    els.canvas.style.display = 'none';
+    els.domRoot.style.display = 'block';
+    els.domRoot.innerHTML = '';
+    controller = game.mount(els.domRoot) || { destroy() {} };
+  } else {
+    els.domRoot.style.display = 'none';
+    els.canvas.style.display = 'block';
+    controller = Engine.run(game, els.canvas);
+    controller.onGameOver((res) => canvasGameOver(game, res));
+  }
 }
 
 function exitToHub() {
+  Platform.gameplayStop();
   if (controller) { controller.destroy(); controller = null; }
+  els.domRoot.innerHTML = '';
   els.play.classList.remove('active');
   els.hub.classList.add('active');
   renderHub();
 }
 
-// ---- Game over flow -----------------------------------------------------
-function gameOver(game, res) {
-  const overlay = document.createElement('div');
-  overlay.className = 'over-overlay';
-  const canRevive = !usedReviveThisRun && controller && game.revive;
-  overlay.innerHTML = `
-    <div class="over-card">
-      <div class="over-title">${res.best ? '🏆 New Best!' : 'Game Over'}</div>
-      <div class="over-score">${res.score}</div>
-      <div class="over-high">Best: ${res.high}</div>
-      <div class="over-actions">
-        ${canRevive ? '<button class="btn revive">▶ Watch ad → Revive</button>' : ''}
-        <button class="btn again">Play Again</button>
-        <button class="btn ghost menu">Menu</button>
-      </div>
-    </div>`;
-  document.body.appendChild(overlay);
-  const close = () => overlay.remove();
+// DOM games request exit by bubbling an 'exit-game' event.
+els.domRoot.addEventListener('exit-game', exitToHub);
 
-  const reviveBtn = overlay.querySelector('.revive');
-  if (reviveBtn) reviveBtn.onclick = async () => {
+// ---- Canvas game-over flow ---------------------------------------------
+async function canvasGameOver(game, res) {
+  Platform.gameplayStop();
+  const canRevive = !usedReviveThisRun && !!game.revive;
+  const action = await gameOverDialog({ score: res.score, best: res.best, high: res.high, canRevive });
+  if (action === 'revive') {
     const earned = await Money.showRewarded();
-    if (earned && controller) { usedReviveThisRun = true; close(); controller.revive(); }
-  };
-  overlay.querySelector('.again').onclick = async () => {
-    close(); await Money.maybeInterstitial(); launch(game);
-  };
-  overlay.querySelector('.menu').onclick = async () => {
-    close(); await Money.maybeInterstitial(); exitToHub();
-  };
+    if (earned && controller) { usedReviveThisRun = true; Platform.gameplayStart(); controller.revive(); }
+    else canvasGameOver(game, res);
+  } else if (action === 'again') { await Money.maybeInterstitial(); launch(game); }
+  else { await Money.maybeInterstitial(); exitToHub(); }
 }
 
 // ---- Controls -----------------------------------------------------------
 els.back.onclick = exitToHub;
-els.sound.onclick = () => {
-  const on = !Engine.store.get('sound', true);
-  Engine.store.set('sound', on);
-  els.sound.textContent = on ? '🔊' : '🔇';
-};
+els.sound.onclick = () => { const on = !Engine.store.get('sound', true); Engine.store.set('sound', on); els.sound.textContent = on ? '🔊' : '🔇'; };
 els.sound.textContent = Engine.store.get('sound', true) ? '🔊' : '🔇';
 els.noads.onclick = async () => { if (await Money.buyRemoveAds()) renderHub(); };
 
-// ---- PWA ----------------------------------------------------------------
+// ---- Boot: platform + PWA ----------------------------------------------
+Platform.init().finally(() => Platform.loadingFinished());
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
 }
-
-// Preload the bundled font so canvas text renders in Space Grotesk immediately.
 if (document.fonts && document.fonts.load) {
-  Promise.all([
-    document.fonts.load('700 16px "Space Grotesk"'),
-    document.fonts.load('500 16px "Space Grotesk"'),
-  ]).catch(() => {});
+  Promise.all([document.fonts.load('700 16px "Space Grotesk"'), document.fonts.load('500 16px "Space Grotesk"')]).catch(() => {});
 }
 
 renderHub();
