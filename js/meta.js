@@ -48,6 +48,7 @@ export const Meta = {
   report(game, info = {}) {
     const set = new Set(Engine.store.get('played', [])); set.add(game); Engine.store.set('played', [...set]);
     const score = typeof info.score === 'number' ? info.score : 0;
+    this._challenge(game, score, !!info.win);
     let earned = 2 + (info.win ? 15 : 0) + Math.min(150, Math.floor(score / 2));
     add(earned);
     const unlocked = evaluate({ game, score, win: !!info.win, store: Engine.store });
@@ -55,11 +56,45 @@ export const Meta = {
     return { earned, unlocked };
   },
 
+  // ---- Daily challenges (beat the day-7 drop-off) ----
+  _chState() {
+    let st = Engine.store.get('ch_state', null);
+    if (!st || st.day !== this._day()) { st = { day: this._day(), rounds: 0, wins: 0, distinct: [], hiscore: 0, claimed: {} }; Engine.store.set('ch_state', st); }
+    return st;
+  },
+  _challenge(game, score, win) {
+    const st = this._chState();
+    st.rounds++; if (win) st.wins++; if (!st.distinct.includes(game)) st.distinct.push(game); st.hiscore = Math.max(st.hiscore, score);
+    Engine.store.set('ch_state', st);
+  },
+  challenges() {
+    const pool = [
+      { id: 'rounds5', metric: 'rounds', goal: 5, reward: 30, desc: 'Play 5 rounds' },
+      { id: 'rounds10', metric: 'rounds', goal: 10, reward: 60, desc: 'Play 10 rounds' },
+      { id: 'wins3', metric: 'wins', goal: 3, reward: 50, desc: 'Win 3 games' },
+      { id: 'distinct3', metric: 'distinct', goal: 3, reward: 45, desc: 'Play 3 different games' },
+      { id: 'distinct5', metric: 'distinct', goal: 5, reward: 80, desc: 'Play 5 different games' },
+      { id: 'score40', metric: 'hiscore', goal: 40, reward: 45, desc: 'Score 40+ in one game' },
+      { id: 'score80', metric: 'hiscore', goal: 80, reward: 80, desc: 'Score 80+ in one game' },
+    ];
+    const day = this._day(); const order = pool.map((p, i) => [p, ((day * 9301 + i * 49297) % 233280)]).sort((a, b) => a[1] - b[1]);
+    const picks = order.slice(0, 3).map(x => x[0]);
+    const st = this._chState();
+    return picks.map(p => { const prog = p.metric === 'distinct' ? st.distinct.length : st[p.metric]; return { ...p, progress: Math.min(prog, p.goal), done: prog >= p.goal, claimed: !!st.claimed[p.id] }; });
+  },
+  claimChallenge(id) {
+    const st = this._chState(); const c = this.challenges().find(x => x.id === id);
+    if (!c || !c.done || st.claimed[id]) return 0;
+    st.claimed[id] = true; Engine.store.set('ch_state', st); add(c.reward); return c.reward;
+  },
+
   // Re-check store-only achievements (streaks, prestige, variety) e.g. on hub open.
   refresh() { evaluate({ game: '', score: 0, win: false, store: Engine.store }); },
 
   // ---- Daily reward (retention) ----
   _day() { return Math.floor(Date.now() / 86400000); },
+  spinAvailable() { return Engine.store.get('spin_last', -1) !== this._day(); },
+  markSpin() { Engine.store.set('spin_last', this._day()); },
   dailyAvailable() { return Engine.store.get('daily_last', -1) !== this._day(); },
   claimDaily() {
     const d = this._day(), last = Engine.store.get('daily_last', -2);

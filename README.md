@@ -94,6 +94,8 @@ Why these? Research (see [MONETIZATION.md](./MONETIZATION.md)) shows the most *a
 ## Engagement features (across every game)
 
 - **Celebrations:** every win/loss triggers slot-machine-style FX — confetti, coin showers, flashes, a count-up reward reveal, and a jackpot blast for perfect runs (all generated, no assets). Plus screen-shake and combo popups.
+- **Daily Spin:** a free once-a-day prize wheel (the Coin Master hook) — slot-style spin for coins, animated with easing + a jackpot segment. Free, cosmetic-only.
+- **Daily Challenges:** 3 rotating goals each day (play N rounds, win N, variety, score targets) with coin payouts — the research-backed fix for the Day-7 drop-off.
 - **Coins + Achievements:** earn coins every run; 15 achievements with coin rewards, tracked across all games.
 - **Unlockable themes:** 6 cosmetic colour themes — the *only* thing coins buy. Never power. Unlock with coins or one optional rewarded ad.
 - **Opt-in rewarded revives, capped interstitials, one-time remove-ads** — the player-friendly money model (see MONETIZATION.md).

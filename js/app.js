@@ -9,6 +9,7 @@ import { Money } from './monetization.js';
 import { Meta } from './meta.js';
 import { Themes } from './themes.js';
 import { FX } from './fx.js';
+import { showSpinWheel } from './spin.js';
 import { gameOverDialog } from './ui.js';
 
 // canvas games
@@ -105,6 +106,8 @@ const els = {
   openSettings: document.getElementById('open-settings'),
   tabGames: document.getElementById('tab-games'),
   tabApps: document.getElementById('tab-apps'),
+  openSpin: document.getElementById('open-spin'),
+  openChallenges: document.getElementById('open-challenges'),
 };
 
 let controller = null;
@@ -132,6 +135,8 @@ function renderHub() {
     els.grid.appendChild(card);
   });
   els.noads.style.display = Money.state.removeAds ? 'none' : 'block';
+  els.openSpin.classList.toggle('ready', Meta.spinAvailable());
+  els.openChallenges.classList.toggle('ready', Meta.challenges().some(c => c.done && !c.claimed));
 }
 function setTab(t) { activeTab = t; els.tabGames.classList.toggle('active', t === 'games'); els.tabApps.classList.toggle('active', t === 'apps'); renderHub(); }
 
@@ -192,6 +197,19 @@ els.sound.textContent = Engine.store.get('sound', true) ? '🔊' : '🔇';
 els.noads.onclick = async () => { if (await Money.buyRemoveAds()) renderHub(); };
 els.tabGames.onclick = () => setTab('games');
 els.tabApps.onclick = () => setTab('apps');
+els.openSpin.onclick = async () => {
+  if (!Meta.spinAvailable()) { const ov = closableOverlay(`<div class="over-title">🎡 Daily Spin</div><div class="over-high">Come back tomorrow for your free spin!</div>`); return; }
+  await showSpinWheel(); renderHub();
+};
+els.openChallenges.onclick = () => {
+  const rows = Meta.challenges().map(c => {
+    const pct = Math.round(c.progress / c.goal * 100);
+    return `<div class="ch-row ${c.done ? 'done' : ''}"><div class="ch-info"><b>${c.desc}</b><div class="ch-bar"><div style="width:${pct}%"></div></div><small>${c.progress}/${c.goal}</small></div>
+      <button class="ch-claim" data-id="${c.id}" ${c.done && !c.claimed ? '' : 'disabled'}>${c.claimed ? '✓' : '+' + c.reward + '🪙'}</button></div>`;
+  }).join('');
+  const ov = closableOverlay(`<div class="over-title">🎯 Daily Challenges</div><div class="ch-list">${rows}</div><div class="over-high" style="margin-top:8px">Resets daily</div>`);
+  ov.querySelectorAll('.ch-claim').forEach(b => b.onclick = () => { const r = Meta.claimChallenge(b.dataset.id); if (r) { FX.coinShower(12); els.coins.textContent = '🪙 ' + Meta.coins(); b.textContent = '✓'; b.disabled = true; } });
+};
 
 // ---- Achievements + Themes overlays ------------------------------------
 function closableOverlay(innerHTML) {
