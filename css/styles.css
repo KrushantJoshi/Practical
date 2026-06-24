@@ -406,3 +406,35 @@ body {
 .lr-spin:active { transform: translateY(3px); box-shadow: 0 3px 0 #c98800; }
 .lr-spin:disabled { opacity: 0.6; }
 .lr-foot { color: var(--muted); font-size: 13px; } .lr-foot b { color: var(--fg); }
+
+/* ---------- Block Blast ---------- */
+.bb2 { max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.bb2-top { color: var(--muted); font-weight: 700; font-size: 14px; } .bb2-top b { color: var(--fg); }
+.bb2-board { display: grid; gap: 3px; width: 100%; background: var(--bg2); padding: 5px; border-radius: 10px; }
+.bb2-cell { aspect-ratio: 1; border: none; border-radius: 5px; background: #11152b; cursor: pointer; padding: 0; }
+.bb2-cell.on { box-shadow: inset 0 -3px 6px rgba(0,0,0,0.25); }
+.bb2-tray { display: flex; gap: 10px; justify-content: center; width: 100%; }
+.bb2-slot { flex: 1; max-width: 100px; min-height: 70px; background: var(--bg2); border: 2px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 8px; }
+.bb2-slot.sel { border-color: #06d6a0; } .bb2-slot.dead { opacity: 0.4; }
+.bb2-mini { display: grid; gap: 2px; } .bb2-mini > div { width: 13px; height: 13px; border-radius: 3px; } .bb2-mini > div.on { box-shadow: inset 0 -2px 3px rgba(0,0,0,0.3); }
+.bb2-hint { color: var(--muted); font-size: 12px; }
+
+/* ---------- Sokoban ---------- */
+.sok { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.sok-top { display: flex; gap: 8px; align-items: center; width: 100%; } .sok-top #sok-info { color: var(--muted); font-weight: 700; font-size: 13px; margin-right: auto; }
+.sok-board { display: grid; gap: 2px; background: #0c0f1f; padding: 6px; border-radius: 8px; }
+.sok-sq { width: 38px; height: 38px; border-radius: 4px; background: #1b2038; display: flex; align-items: center; justify-content: center; }
+.sok-sq.wall { background: #3a4063; } .sok-sq.goal { background: #123a2a; box-shadow: inset 0 0 0 2px #06d6a0; }
+.sok-sq.box { background: #ffb703; border-radius: 6px; } .sok-sq.box-ok { background: #06d6a0; border-radius: 6px; }
+.sok-sq.player { background: radial-gradient(circle at 40% 35%, #ff7a8a, #ef476f); border-radius: 50%; }
+.sok-pad { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sok-mid { display: flex; gap: 6px; }
+.sok-btn { width: 56px; height: 50px; border: none; border-radius: 10px; background: var(--bg2); color: #fff; font-size: 20px; cursor: pointer; }
+.sok-btn:active { background: var(--accent); }
+
+/* ---------- 15 Puzzle ---------- */
+.f15 { max-width: 360px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.f15-top { color: var(--muted); font-weight: 700; } .f15-top b { color: var(--fg); }
+.f15-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+.f15-tile { aspect-ratio: 1; border: none; border-radius: 10px; background: linear-gradient(160deg,#4895ef,#3a4070); color: #fff; font-size: 28px; font-weight: 800; cursor: pointer; }
+.f15-tile.blank { background: transparent; cursor: default; }

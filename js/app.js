@@ -56,12 +56,15 @@ import { SnakesLadders } from './games/snakesladders.js';
 import { Mahjong } from './games/mahjong.js';
 import { Hanoi } from './games/hanoi.js';
 import { LuckyReels } from './games/luckyreels.js';
+import { BlockBlast } from './games/blockblast.js';
+import { Sokoban } from './games/sokoban.js';
+import { Fifteen } from './games/fifteen.js';
 
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,
   GemBlitz, SkyClimb, DashRun, StarBlaster, GridDefense, AirHockey, BubblePop, Maze, RoadCross,
   Merge2048, DailyWord, MemoryMatch, IdleForge, TicTacToe, Minesweeper, Sudoku, BlockDrop, Solitaire, ConnectFour,
-  LightsOut, Blackjack, WordSearch, Checkers, Reversi, Hangman, Mastermind, Battleship, VideoPoker, Nonogram, SnakesLadders, Mahjong, Hanoi, LuckyReels,
+  LightsOut, Blackjack, WordSearch, Checkers, Reversi, Hangman, Mastermind, Battleship, VideoPoker, Nonogram, SnakesLadders, Mahjong, Hanoi, LuckyReels, BlockBlast, Sokoban, Fifteen,
 ];
 const ACCENTS = ['#ef476f', '#06d6a0', '#4895ef', '#ffd166', '#b388ff', '#ff7e6b'];
 
