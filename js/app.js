@@ -63,6 +63,7 @@ import { Fifteen } from './games/fifteen.js';
 import { IdleTycoon } from './games/idletycoon.js';
 import { FloodIt } from './games/floodit.js';
 import { Chess } from './games/chess.js';
+import { Dungeon } from './games/dungeon.js';
 
 // apps
 import { Calculator } from './apps/calculator.js';
@@ -79,14 +80,15 @@ import { Beats } from './apps/beats.js';
 import { Focus } from './apps/focus.js';
 import { Typing } from './apps/typing.js';
 import { Expense } from './apps/expense.js';
+import { Aurora } from './apps/aurora.js';
 
-const APPS = [Calculator, Converter, Stopwatch, Todo, Notes, TipCalc, Piano, Sketch, Habits, Password, Beats, Focus, Typing, Expense];
+const APPS = [Calculator, Converter, Stopwatch, Todo, Notes, TipCalc, Piano, Sketch, Habits, Password, Beats, Focus, Typing, Expense, Aurora];
 
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,
   GemBlitz, SkyClimb, DashRun, StarBlaster, GridDefense, AirHockey, BubblePop, Maze, RoadCross,
   Merge2048, DailyWord, MemoryMatch, IdleForge, TicTacToe, Minesweeper, Sudoku, BlockDrop, Solitaire, ConnectFour,
-  LightsOut, Blackjack, WordSearch, Checkers, Reversi, Hangman, Mastermind, Battleship, VideoPoker, Nonogram, SnakesLadders, Mahjong, Hanoi, LuckyReels, BlockBlast, Sokoban, Fifteen, IdleTycoon, FloodIt, Chess,
+  LightsOut, Blackjack, WordSearch, Checkers, Reversi, Hangman, Mastermind, Battleship, VideoPoker, Nonogram, SnakesLadders, Mahjong, Hanoi, LuckyReels, BlockBlast, Sokoban, Fifteen, IdleTycoon, FloodIt, Chess, Dungeon,
 ];
 const ACCENTS = ['#ef476f', '#06d6a0', '#4895ef', '#ffd166', '#b388ff', '#ff7e6b'];
 

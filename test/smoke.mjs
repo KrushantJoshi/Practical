@@ -19,7 +19,7 @@ const DOM = [
   ['tictactoe', 'TicTacToe'], ['mines', 'Minesweeper'], ['sudoku', 'Sudoku'], ['tetris', 'BlockDrop'],
   ['solitaire', 'Solitaire'], ['connect4', 'ConnectFour'], ['lightsout', 'LightsOut'], ['blackjack', 'Blackjack'],
   ['wordsearch', 'WordSearch'], ['checkers', 'Checkers'], ['reversi', 'Reversi'], ['hangman', 'Hangman'],
-  ['mastermind', 'Mastermind'], ['battleship', 'Battleship'], ['videopoker', 'VideoPoker'], ['nonogram', 'Nonogram'], ['snakesladders', 'SnakesLadders'], ['mahjong', 'Mahjong'], ['hanoi', 'Hanoi'], ['luckyreels', 'LuckyReels'], ['blockblast', 'BlockBlast'], ['sokoban', 'Sokoban'], ['fifteen', 'Fifteen'], ['idletycoon', 'IdleTycoon'], ['floodit', 'FloodIt'], ['chess', 'Chess'],
+  ['mastermind', 'Mastermind'], ['battleship', 'Battleship'], ['videopoker', 'VideoPoker'], ['nonogram', 'Nonogram'], ['snakesladders', 'SnakesLadders'], ['mahjong', 'Mahjong'], ['hanoi', 'Hanoi'], ['luckyreels', 'LuckyReels'], ['blockblast', 'BlockBlast'], ['sokoban', 'Sokoban'], ['fifteen', 'Fifteen'], ['idletycoon', 'IdleTycoon'], ['floodit', 'FloodIt'], ['chess', 'Chess'], ['dungeon', 'Dungeon'],
 ];
 
 let err = 0;
@@ -46,7 +46,7 @@ const APPS = [
   ['calculator', 'Calculator'], ['converter', 'Converter'], ['stopwatch', 'Stopwatch'],
   ['notes', 'Notes'], ['todo', 'Todo'], ['tip', 'TipCalc'],
   ['piano', 'Piano'], ['draw', 'Sketch'], ['habits', 'Habits'], ['password', 'Password'],
-  ['beats', 'Beats'], ['focus', 'Focus'], ['typing', 'Typing'], ['expense', 'Expense'],
+  ['beats', 'Beats'], ['focus', 'Focus'], ['typing', 'Typing'], ['expense', 'Expense'], ['aurora', 'Aurora'],
 ];
 for (const [f, n] of APPS) {
   try { const a = (await import(`../js/apps/${f}.js`))[n]; const r = make(); const c = a.mount(r); c && c.destroy && c.destroy(); }

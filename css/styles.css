@@ -666,3 +666,16 @@ body {
 .hub-noresults { color: var(--muted); text-align: center; padding: 40px; grid-column: 1 / -1; }
 .card { animation: card-in .32s ease both; }
 @keyframes card-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ---------- Dungeon Dash ---------- */
+.dg { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.dg-hud { display: flex; justify-content: space-between; width: 100%; font-weight: 700; font-size: 14px; }
+.dg-hud #dg-hp { color: #ef476f; } .dg-hud #dg-gold { color: #ffd166; }
+.dg-board { display: grid; gap: 2px; background: #0a0c18; padding: 6px; border-radius: 10px; width: 100%; }
+.dg-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: clamp(14px, 4.5vw, 22px); border-radius: 3px; }
+.dg-cell.wall { background: #2a3052; } .dg-cell.floor { background: #161a30; }
+
+/* ---------- Aurora ---------- */
+.au { max-width: 560px; margin: 0 auto; position: relative; }
+.au-cv { width: 100%; height: 70vh; max-height: 560px; border-radius: 16px; background: #0e1020; touch-action: none; display: block; }
+.au-hint { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px; pointer-events: none; }
