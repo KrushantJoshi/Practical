@@ -7,6 +7,7 @@ import { Engine } from '../engine.js';
 import { Money } from '../monetization.js';
 import { Meta } from '../meta.js';
 import { toast } from '../ui.js';
+import { FX } from '../fx.js';
 
 // A compact answer pool of common 5-letter words. Same word for everyone each day.
 const WORDS = ('apple beach brave bread brick brush chair charm chase cheer chess chord clean clear climb clock cloud coast crane crash dance dream drink drive eagle earth feast field flame flash flock flour focus frame fresh front fruit ghost glass globe grace grain grape grass green greet heart honey house ivory joker juice knife laugh lemon light lucky lunar magic maple medal money month mouse music night noble ocean olive paint peace pearl pilot pixel plant plaza pride prize proud quiet quilt raise ranch rapid raven reach river roast robin royal sharp shine shore smile smoke snail solar sound spark spice spine stone storm sugar sunny sweet table tiger toast torch tower trail train treat trend tulip vivid vocal water wheat witty world youth zebra').split(' ');
@@ -117,6 +118,7 @@ export const DailyWord = {
       return guesses.map(g => score(g).map(m => ({ g: '🟩', y: '🟨', x: '⬛' }[m])).join('')).join('\n');
     }
     function endDialog(result) {
+      if (result === 'win') FX.win(40); else FX.lose();
       const ov = document.createElement('div'); ov.className = 'over-overlay';
       ov.innerHTML = `<div class="over-card">
         <div class="over-title">${result === 'win' ? '✅ Solved!' : '❌ ' + answer}</div>

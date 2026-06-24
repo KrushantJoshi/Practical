@@ -2,18 +2,24 @@
  * ui.js — shared UI bits used by every game.
  * The game-over dialog is the one place ads meet gameplay, so it lives here
  * and stays consistent: optional rewarded revive, "play again", "menu".
+ * It also fires the celebratory/loss FX so every game feels great on win/lose.
  */
+import { FX } from './fx.js';
 
 // Returns a Promise that resolves to 'revive' | 'again' | 'menu'.
-export function gameOverDialog({ title = 'Game Over', score, best = false, high, reviveLabel = '▶ Watch ad → Revive', canRevive = false } = {}) {
+// win: true → celebration FX; false → loss FX. coins: animates a slot-style reveal.
+export function gameOverDialog({ title = 'Game Over', score, best = false, high, reviveLabel = '▶ Watch ad → Revive', canRevive = false, win = null, coins = 0, jackpot = false } = {}) {
   return new Promise((resolve) => {
+    const isWin = win == null ? best : win;
+    if (jackpot) FX.jackpot(); else if (isWin) FX.win(coins); else FX.lose();
     const overlay = document.createElement('div');
     overlay.className = 'over-overlay';
     overlay.innerHTML = `
-      <div class="over-card">
+      <div class="over-card ${isWin ? 'win' : 'lose'}">
         <div class="over-title">${best ? '🏆 New Best!' : title}</div>
         ${score != null ? `<div class="over-score">${score}</div>` : ''}
         ${high != null ? `<div class="over-high">Best: ${high}</div>` : ''}
+        ${coins > 0 ? `<div class="over-reward" id="go-reward"></div>` : ''}
         <div class="over-actions">
           ${canRevive ? `<button class="btn revive">${reviveLabel}</button>` : ''}
           <button class="btn again">Play Again</button>
@@ -21,6 +27,7 @@ export function gameOverDialog({ title = 'Game Over', score, best = false, high,
         </div>
       </div>`;
     document.body.appendChild(overlay);
+    if (coins > 0) FX.rewardReveal(overlay.querySelector('#go-reward'), coins);
     const done = (action) => { overlay.remove(); resolve(action); };
     const rev = overlay.querySelector('.revive');
     if (rev) rev.onclick = () => done('revive');

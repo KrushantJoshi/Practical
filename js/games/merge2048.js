@@ -104,7 +104,7 @@ export const Merge2048 = {
     async function endGame() {
       over = true; S.submit('merge', score); Engine.sfx.over();
       Meta.report('merge', { score, win: grid.some(row => row.some(v => v >= 2048)) });
-      const action = await gameOverDialog({ title: 'No moves left', score, high: S.high('merge'), canRevive: !usedRevive, reviveLabel: '▶ Watch ad → Clear 4 tiles' });
+      const action = await gameOverDialog({ title: 'No moves left', score, high: S.high('merge'), win: false, canRevive: !usedRevive, reviveLabel: '▶ Watch ad → Clear 4 tiles' });
       if (action === 'revive') {
         const ok = await Money.showRewarded();
         if (ok) { usedRevive = true; clearSmallest(); over = false; render(); return; }

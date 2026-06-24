@@ -72,7 +72,7 @@ export const Mastermind = {
       else Engine.sfx.over();
       Meta.report('mastermind', { win, score: win ? (ROWS - guesses.length + 1) * 10 : 0 });
       const codeStr = secret.map(i => COLORS[i]);
-      const a = await gameOverDialog({ title: win ? `Cracked in ${guesses.length}! 🧠` : 'Out of guesses', canRevive: false });
+      const a = await gameOverDialog({ title: win ? `Cracked in ${guesses.length}! 🧠` : 'Out of guesses', win, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); reset(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#mm-submit').onclick = submit;

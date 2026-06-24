@@ -57,7 +57,7 @@ export const SnakesLadders = {
       over = true;
       if (win) { S.set('sl_wins', S.get('sl_wins', 0) + 1); Engine.sfx.good(); } else { S.set('sl_losses', S.get('sl_losses', 0) + 1); Engine.sfx.over(); }
       Meta.report('snakesladders', { win });
-      const a = await gameOverDialog({ title: win ? 'You reached 100! 🎉' : 'AI got there first', canRevive: false });
+      const a = await gameOverDialog({ title: win ? 'You reached 100! 🎉' : 'AI got there first', win, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); reset(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#sl-roll').onclick = roll;

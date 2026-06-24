@@ -12,6 +12,7 @@ import { Engine } from '../engine.js';
 import { Money } from '../monetization.js';
 import { Meta } from '../meta.js';
 import { toast, fmt } from '../ui.js';
+import { FX } from '../fx.js';
 
 const GENERATORS = [
   { key: 'apprentice', name: 'Apprentice', baseCost: 15,     rate: 0.2 },
@@ -92,7 +93,7 @@ export const IdleForge = {
       if (!confirm(`Reforge for +${gain} Embers (+${gain * 2}% permanent bonus)?\nThis resets sparks and generators.`)) return;
       embers += gain; sparks = 0;
       GENERATORS.forEach((g) => counts[g.key] = 0);
-      Engine.sfx.good(); toast(`Reforged! +${gain} Embers 🔥`);
+      Engine.sfx.good(); FX.jackpot(); toast(`Reforged! +${gain} Embers 🔥`);
       render();
     };
 
@@ -120,6 +121,7 @@ export const IdleForge = {
     }
 
     function offlineDialog(earned) {
+      FX.coinShower(30); FX.flash('rgba(255,209,102,0.4)');
       const ov = document.createElement('div');
       ov.className = 'over-overlay';
       ov.innerHTML = `<div class="over-card">

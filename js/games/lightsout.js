@@ -47,7 +47,7 @@ export const LightsOut = {
       over = true; Engine.sfx.good();
       const best = S.get('lights_best', 0); if (!best || moves < best) S.set('lights_best', moves);
       Meta.report('lights', { win: true, score: Math.max(0, 60 - moves) });
-      const a = await gameOverDialog({ title: `Solved in ${moves} moves! 💡`, canRevive: false });
+      const a = await gameOverDialog({ title: `Solved in ${moves} moves! 💡`, win: true, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); gen(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#lo-new').onclick = gen;

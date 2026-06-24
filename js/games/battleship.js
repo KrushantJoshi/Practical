@@ -96,7 +96,7 @@ export const Battleship = {
       over = true;
       if (win) { S.set('bs_wins', S.get('bs_wins', 0) + 1); Engine.sfx.good(); } else { S.set('bs_losses', S.get('bs_losses', 0) + 1); Engine.sfx.over(); }
       Meta.report('battleship', { win });
-      const a = await gameOverDialog({ title: win ? 'Enemy fleet sunk! 🚢' : 'Your fleet is lost', canRevive: false });
+      const a = await gameOverDialog({ title: win ? 'Enemy fleet sunk! 🚢' : 'Your fleet is lost', win, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); reset(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#bs-new').onclick = reset;

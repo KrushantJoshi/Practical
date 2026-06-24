@@ -83,7 +83,7 @@ export const Solitaire = {
       if (foundations.every(f => f.length === 13)) {
         S.set('sol_wins', S.get('sol_wins', 0) + 1); Engine.sfx.good();
         Meta.report('solitaire', { win: true, score: Math.max(0, 200 - moves) });
-        const a = await gameOverDialog({ title: `You won in ${moves} moves! 🃏`, canRevive: false });
+        const a = await gameOverDialog({ title: `You won in ${moves} moves! 🃏`, win: true, jackpot: true, canRevive: false });
         if (a === 'again') { await Money.maybeInterstitial(); deal(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
       }
     }

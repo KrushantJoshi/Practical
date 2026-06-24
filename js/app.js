@@ -8,6 +8,7 @@ import { Platform } from './platform.js';
 import { Money } from './monetization.js';
 import { Meta } from './meta.js';
 import { Themes } from './themes.js';
+import { FX } from './fx.js';
 import { gameOverDialog } from './ui.js';
 
 // canvas games
@@ -142,9 +143,9 @@ els.domRoot.addEventListener('exit-game', exitToHub);
 // ---- Canvas game-over flow ---------------------------------------------
 async function canvasGameOver(game, res) {
   Platform.gameplayStop();
-  Meta.report(game.id, { score: res.score });
+  const reward = Meta.report(game.id, { score: res.score });
   const canRevive = !usedReviveThisRun && !!game.revive;
-  const action = await gameOverDialog({ score: res.score, best: res.best, high: res.high, canRevive });
+  const action = await gameOverDialog({ score: res.score, best: res.best, high: res.high, canRevive, win: res.best, coins: reward.earned });
   if (action === 'revive') {
     const earned = await Money.showRewarded();
     if (earned && controller) { usedReviveThisRun = true; Platform.gameplayStart(); controller.revive(); }
@@ -206,6 +207,7 @@ els.openSettings.onclick = () => {
 function maybeDailyReward() {
   if (!Meta.dailyAvailable()) return;
   const { amount, streak } = Meta.claimDaily();
+  FX.win(amount);
   const ov = document.createElement('div'); ov.className = 'over-overlay';
   ov.innerHTML = `<div class="over-card">
     <div class="over-title">Daily Reward 🎁</div>

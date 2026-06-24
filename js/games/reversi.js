@@ -113,7 +113,7 @@ export const Reversi = {
       root.querySelector('#rv-l').textContent = S.get('rv_losses', 0);
       Meta.report('reversi', { win: h > a });
       render();
-      const action = await gameOverDialog({ title, canRevive: false });
+      const action = await gameOverDialog({ title, win: h > a, canRevive: false });
       if (action === 'again') { await Money.maybeInterstitial(); reset(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#rv-new').onclick = reset;

@@ -78,7 +78,7 @@ export const BlockDrop = {
     async function end() {
       over = true; cancelAnimationFrame(raf); S.submit('tetris', score); Engine.sfx.over(); Meta.report('tetris', { score });
       root.querySelector('#tt-best').textContent = S.high('tetris');
-      const action = await gameOverDialog({ title: 'Game Over', score, high: S.high('tetris') });
+      const action = await gameOverDialog({ title: 'Game Over', score, high: S.high('tetris'), win: false });
       if (action === 'again') { await Money.maybeInterstitial(); reset(); last = performance.now(); raf = requestAnimationFrame(tick); }
       else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }

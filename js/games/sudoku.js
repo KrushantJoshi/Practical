@@ -92,7 +92,7 @@ export const Sudoku = {
       clearInterval(timer); const s = secs(); Engine.sfx.good();
       const b = S.get('sudoku_best', 0); if (!b || s < b) S.set('sudoku_best', s);
       Meta.report('sudoku', { win: true, score: Math.max(0, 120 - s) });
-      const action = await gameOverDialog({ title: `Solved in ${s}s! 🧠`, canRevive: false });
+      const action = await gameOverDialog({ title: `Solved in ${s}s! 🧠`, win: true, canRevive: false });
       if (action === 'again') { await Money.maybeInterstitial(); gen(); }
       else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }

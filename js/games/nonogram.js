@@ -58,7 +58,7 @@ export const Nonogram = {
     async function win() {
       over = true; S.set('ng_solved', S.get('ng_solved', 0) + 1); Engine.sfx.good();
       Meta.report('nonogram', { win: true, score: 40 });
-      const a = await gameOverDialog({ title: 'Solved! 🧩', canRevive: false });
+      const a = await gameOverDialog({ title: 'Solved! 🧩', win: true, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); gen(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#ng-mode').onclick = () => { mark = !mark; const b = root.querySelector('#ng-mode'); b.textContent = mark ? '✖️ Mark' : '✏️ Fill'; b.classList.toggle('on', mark); };

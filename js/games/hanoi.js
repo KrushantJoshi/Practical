@@ -55,7 +55,7 @@ export const Hanoi = {
       if (lvl > S.get('hanoi_best', 0)) S.set('hanoi_best', lvl);
       Meta.report('hanoi', { win: true, score: lvl * 10 });
       const perfect = moves === optimal();
-      const a = await gameOverDialog({ title: `Solved in ${moves}!${perfect ? ' Perfect! ⭐' : ''}`, canRevive: false });
+      const a = await gameOverDialog({ title: `Solved in ${moves}!${perfect ? ' Perfect! ⭐' : ''}`, win: true, jackpot: perfect, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); disks = Math.min(7, disks + 1); setup(); }
       else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }

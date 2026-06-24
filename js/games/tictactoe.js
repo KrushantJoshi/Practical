@@ -75,7 +75,7 @@ export const TicTacToe = {
       root.querySelector('#t-l').textContent = S.get('ttt_losses', 0);
       root.querySelector('#t-d').textContent = S.get('ttt_draws', 0);
       Meta.report('tictactoe', { win: w === you });
-      const action = await gameOverDialog({ title, canRevive: false });
+      const action = await gameOverDialog({ title, win: w === you, canRevive: false });
       if (action === 'again') { await Money.maybeInterstitial(); reset(); }
       else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }

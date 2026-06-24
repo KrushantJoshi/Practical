@@ -349,7 +349,13 @@ body {
   background: var(--bg2); border: 1px solid rgba(255,255,255,0.08);
   border-radius: 22px; padding: 28px; text-align: center; width: 100%; max-width: 340px;
 }
+.over-card { animation: pop-in .32s cubic-bezier(.2,1.3,.4,1); }
+.over-card.win { box-shadow: 0 0 0 1px rgba(255,209,102,0.5), 0 18px 60px rgba(255,183,3,0.25); }
+.over-card.lose { box-shadow: 0 0 0 1px rgba(239,71,111,0.35), 0 18px 60px rgba(239,71,111,0.18); }
+@keyframes pop-in { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.over-reward { font-size: 28px; font-weight: 800; color: #ffd166; margin: 6px 0 14px; min-height: 30px; text-shadow: 0 2px 10px rgba(255,209,102,0.5); }
 .over-title { font-size: 22px; font-weight: 800; }
+.over-card.win .over-title { background: linear-gradient(90deg,#ffd166,#ff7e6b); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .over-score { font-size: 64px; font-weight: 800; color: var(--accent); line-height: 1.1; margin: 6px 0; }
 .over-high { color: var(--muted); margin-bottom: 18px; }
 .over-actions { display: flex; flex-direction: column; gap: 10px; }

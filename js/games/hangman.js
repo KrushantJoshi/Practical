@@ -69,7 +69,7 @@ export const Hangman = {
       root.querySelector('#hm-s').textContent = S.get('hm_streak', 0);
       Meta.report('hangman', { win, score: win ? (MAX - wrong) * 8 : 0 });
       renderKeys();
-      const a = await gameOverDialog({ title: win ? 'Solved! 🎉' : `It was ${word}`, canRevive: false });
+      const a = await gameOverDialog({ title: win ? 'Solved! 🎉' : `It was ${word}`, win, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); reset(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     const onKey = (e) => { const ch = (e.key || '').toUpperCase(); if (/^[A-Z]$/.test(ch)) { e.preventDefault(); guess(ch); } };

@@ -86,7 +86,7 @@ export const WordSearch = {
     async function win() {
       S.set('ws_solved', S.get('ws_solved', 0) + 1); Engine.sfx.good();
       Meta.report('wordsearch', { win: true, score: 30 });
-      const a = await gameOverDialog({ title: 'All words found! 🔍', canRevive: false });
+      const a = await gameOverDialog({ title: 'All words found! 🔍', win: true, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); gen(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#ws-new').onclick = gen;

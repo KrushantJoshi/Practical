@@ -145,7 +145,7 @@ export const Checkers = {
       root.querySelector('#chk-w').textContent = S.get('chk_wins', 0);
       root.querySelector('#chk-l').textContent = S.get('chk_losses', 0);
       Meta.report('checkers', { win: w === 'r' });
-      const a = await gameOverDialog({ title, canRevive: false });
+      const a = await gameOverDialog({ title, win: w === 'r', canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); reset(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#chk-new').onclick = reset;

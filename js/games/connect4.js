@@ -116,7 +116,7 @@ export const ConnectFour = {
       root.querySelector('#c4-w').textContent = S.get('c4_wins', 0);
       root.querySelector('#c4-l').textContent = S.get('c4_losses', 0);
       Meta.report('connect4', { win: w === YOU });
-      const a = await gameOverDialog({ title, canRevive: false });
+      const a = await gameOverDialog({ title, win: w === YOU, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); reset(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#c4-new').onclick = reset;

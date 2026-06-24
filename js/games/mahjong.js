@@ -92,7 +92,7 @@ export const Mahjong = {
     async function win() {
       over = true; S.set('mj_solved', S.get('mj_solved', 0) + 1); Engine.sfx.good();
       Meta.report('mahjong', { win: true, score: 50 });
-      const a = await gameOverDialog({ title: 'Board cleared! 🀄', canRevive: false });
+      const a = await gameOverDialog({ title: 'Board cleared! 🀄', win: true, canRevive: false });
       if (a === 'again') { await Money.maybeInterstitial(); deal(); } else { await Money.maybeInterstitial(); root.dispatchEvent(new CustomEvent('exit-game', { bubbles: true })); }
     }
     root.querySelector('#mj-shuffle').onclick = shuffle;
