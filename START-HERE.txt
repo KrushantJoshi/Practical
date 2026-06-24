@@ -1,0 +1,33 @@
+TapForge — 50 games + 15 apps
+================================
+
+IMPORTANT: This app uses JavaScript modules, so you can't just double-click
+index.html (browsers block modules on file://). You need to run a tiny local
+web server — it takes one step:
+
+EASIEST — use a launcher for your system:
+  • Windows:  double-click  run-windows.bat
+  • macOS:    double-click  run-mac.command   (first time: right-click → Open)
+  • Linux:    run  ./run-linux.sh   in a terminal
+
+Each one starts a local server and opens http://localhost:8000 in your browser.
+Press Ctrl+C in the little window to stop it when you're done.
+
+MANUAL (if the launcher doesn't work) — you need Python OR Node installed:
+  1. Open a terminal/command prompt in this folder.
+  2. Run ONE of these:
+        python -m http.server 8000
+        python3 -m http.server 8000
+        npx serve -l 8000        (if you have Node.js)
+  3. Open http://localhost:8000 in your browser.
+
+ON YOUR PHONE: once the server is running, open
+  http://<your-computer-ip>:8000  on a phone on the same Wi-Fi, then use
+  "Add to Home Screen" to install it like a real app (works offline after).
+
+WHAT'S INSIDE
+  • Top of the screen: switch between the Games and Apps tabs; use the search box.
+  • 🎡 Daily Spin, 🎯 Daily Challenges, 🏆 Achievements, 🎨 Themes, ⚙️ Settings.
+  • Everything saves to your browser and works fully offline.
+
+Enjoy! — TapForge

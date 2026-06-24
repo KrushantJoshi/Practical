@@ -67,9 +67,10 @@ export const Engine = (() => {
       for (const p of this.list) {
         ctx.globalAlpha = Math.max(0, p.life);
         ctx.fillStyle = p.color;
+        ctx.shadowColor = p.color; ctx.shadowBlur = 10;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
       }
-      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     }
   }
 
@@ -83,10 +84,11 @@ export const Engine = (() => {
       for (const p of this.list) {
         ctx.globalAlpha = Math.max(0, p.life);
         ctx.fillStyle = p.color;
-        ctx.font = `800 ${p.size}px "Space Grotesk", system-ui`;
+        ctx.shadowColor = p.color; ctx.shadowBlur = 12;
+        ctx.font = `800 ${p.size * (1 + (1 - p.life) * 0.15)}px "Space Grotesk", system-ui`;
         ctx.fillText(p.text, p.x, p.y);
       }
-      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     }
   }
 
@@ -99,6 +101,13 @@ export const Engine = (() => {
     api.shake = (amount) => { shakeAmt = Math.max(shakeAmt, amount); };
     let raf = 0, last = 0, alive = true, over = false, shakeAmt = 0;
 
+    let bgGrad = null;
+    function buildBg() {
+      const cs = (typeof getComputedStyle !== 'undefined') ? getComputedStyle(document.documentElement) : null;
+      const bg2 = (cs && cs.getPropertyValue('--bg2').trim()) || '#161a30';
+      const bg = (cs && cs.getPropertyValue('--bg').trim()) || '#0e1020';
+      try { bgGrad = ctx.createRadialGradient(api.w / 2, api.h * 0.32, 0, api.w / 2, api.h * 0.55, Math.max(api.w, api.h) * 0.8); bgGrad.addColorStop(0, bg2); bgGrad.addColorStop(1, bg); } catch { bgGrad = null; }
+    }
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 3);
       const rect = canvas.getBoundingClientRect();
@@ -106,6 +115,7 @@ export const Engine = (() => {
       canvas.height = rect.height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       api.w = rect.width; api.h = rect.height; api.dpr = dpr;
+      buildBg();
       game.onResize && game.onResize(api);
     }
     window.addEventListener('resize', resize);
@@ -129,6 +139,7 @@ export const Engine = (() => {
       if (!over) game.update && game.update(dt, api);  // freeze sim on game-over until revive
       const sh = shakeAmt > 0.3 ? shakeAmt : 0; shakeAmt *= 0.86;
       ctx.clearRect(-18, -18, api.w + 36, api.h + 36);
+      if (bgGrad) { ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, api.w, api.h); }
       ctx.save();
       if (sh) ctx.translate((Math.random() * 2 - 1) * sh, (Math.random() * 2 - 1) * sh);
       game.draw && game.draw(ctx, api);
