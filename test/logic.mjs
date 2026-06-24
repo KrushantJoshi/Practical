@@ -94,6 +94,20 @@ const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   ck('nonogram clues runs', JSON.stringify(_test.clues([1, 1, 0, 1, 1, 1, 0, 0])) === JSON.stringify([2, 3]));
   ck('nonogram empty line = [0]', JSON.stringify(_test.clues([0, 0, 0])) === JSON.stringify([0]));
 }
+// ---- Chess legal move generation ----
+{
+  const { _test } = await import('../js/games/chess.js');
+  ck('chess opening = 20 legal moves', _test.legalMoves(_test.start, 'w').length === 20);
+  // fool's-mate position: black Qh4 is checkmate on white
+  const b = _test.start.slice();
+  const mv = (from, to) => { const f = (8 - +from[1]) * 8 + (from.charCodeAt(0) - 97); const t = (8 - +to[1]) * 8 + (to.charCodeAt(0) - 97); return { from: f, to: t }; };
+  let g = _test.applyMove(b, mv('f2', 'f3'));
+  g = _test.applyMove(g, mv('e7', 'e5'));
+  g = _test.applyMove(g, mv('g2', 'g4'));
+  g = _test.applyMove(g, mv('d8', 'h4')); // Qh4#
+  ck('chess detects check', _test.inCheck(g, 'w'));
+  ck('chess detects checkmate (no legal moves)', _test.legalMoves(g, 'w').length === 0);
+}
 // ---- Mahjong: generated board is solvable (replay peel order) ----
 {
   const { _test } = await import('../js/games/mahjong.js');
