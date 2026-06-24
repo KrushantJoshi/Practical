@@ -438,3 +438,30 @@ body {
 .f15-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
 .f15-tile { aspect-ratio: 1; border: none; border-radius: 10px; background: linear-gradient(160deg,#4895ef,#3a4070); color: #fff; font-size: 28px; font-weight: 800; cursor: pointer; }
 .f15-tile.blank { background: transparent; cursor: default; }
+
+/* ---------- Idle Tycoon ---------- */
+.ty { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.ty-head { display: flex; justify-content: space-between; align-items: baseline; }
+.ty-cash { font-size: 30px; font-weight: 800; color: #06d6a0; }
+.ty-mult { color: var(--muted); font-weight: 600; font-size: 13px; }
+.ty-list { display: flex; flex-direction: column; gap: 8px; }
+.ty-row { display: flex; align-items: center; gap: 8px; background: var(--bg2); border-radius: 12px; padding: 8px; }
+.ty-row.locked { opacity: 0.6; }
+.ty-run { width: 52px; height: 52px; border: none; border-radius: 50%; font-size: 26px; background: #11152b; cursor: pointer; }
+.ty-mid { flex: 1; }
+.ty-bar { position: relative; height: 24px; background: #11152b; border-radius: 6px; overflow: hidden; }
+.ty-fill { position: absolute; inset: 0 auto 0 0; width: 0; background: linear-gradient(90deg,#4895ef,#06d6a0); transition: width .1s linear; }
+.ty-rev { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; }
+.ty-sub { font-size: 12px; color: var(--muted); margin-top: 3px; } .ty-sub b { color: var(--fg); }
+.ty-buys { display: flex; flex-direction: column; gap: 4px; }
+.ty-buy, .ty-mgr { border: none; border-radius: 8px; padding: 7px 8px; font-size: 11px; font-weight: 700; cursor: pointer; background: #2a3052; color: #fff; min-width: 78px; }
+.ty-buy:disabled, .ty-mgr:disabled { opacity: 0.45; }
+.ty-prestige { padding: 14px; border: none; border-radius: 12px; background: #06d6a0; color: #04231a; font-weight: 800; cursor: pointer; }
+
+/* ---------- Flood It ---------- */
+.fl { max-width: 420px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.fl-top { color: var(--muted); font-weight: 700; } .fl-top b { color: var(--fg); }
+.fl-board { display: grid; gap: 0; width: 100%; border-radius: 8px; overflow: hidden; }
+.fl-cell { aspect-ratio: 1; }
+.fl-pal { display: flex; gap: 10px; }
+.fl-col { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); cursor: pointer; }

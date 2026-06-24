@@ -1,6 +1,6 @@
 # TapForge 🎮
 
-A suite of **46 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
+A suite of **48 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
 
 One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for the app stores) **and web game portals** (Poki, CrazyGames, GameDistribution).
 
@@ -45,12 +45,14 @@ One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for t
 | **Block Blast** | Drop shapes, clear lines, ramps as it fills |
 | **Sokoban** | Push boxes onto goals (authored levels) |
 | **15 Puzzle** | Slide tiles into numeric order |
+| **Flood It** | Flood the board into one colour |
 | **Hangman** | Guess the word before the figure completes |
 
 **Strategy / action (deeper)**
 | Game | One-line |
 |---|---|
 | **Idle Forge** | Idle/incremental: tap, automate, prestige, offline earnings |
+| **Idle Tycoon** | Businesses, managers, prestige — an idle empire |
 | **Tic-Tac-Toe** | vs a minimax AI; W/L/D record |
 | **Connect Four** | vs a depth-5 alpha-beta AI |
 | **Star Blaster** | Vertical space shooter with escalating waves |
@@ -107,7 +109,7 @@ js/meta.js              coins + achievements (cross-game progression)
 js/themes.js            cosmetic unlockable themes (coin sink)
 js/ui.js                shared game-over dialog, toast, number formatting
 js/fx.js                celebration FX — confetti, coin showers, jackpot, reward count-up
-js/games/*.js           the 46 games (19 canvas + 27 DOM)
+js/games/*.js           the 48 games (19 canvas + 29 DOM)
 manifest.webmanifest    PWA install metadata
 service-worker.js       offline caching
 assets/                 CC0/OFL font + original icon  (see ASSETS.md)
