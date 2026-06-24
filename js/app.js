@@ -55,12 +55,13 @@ import { Nonogram } from './games/nonogram.js';
 import { SnakesLadders } from './games/snakesladders.js';
 import { Mahjong } from './games/mahjong.js';
 import { Hanoi } from './games/hanoi.js';
+import { LuckyReels } from './games/luckyreels.js';
 
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,
   GemBlitz, SkyClimb, DashRun, StarBlaster, GridDefense, AirHockey, BubblePop, Maze, RoadCross,
   Merge2048, DailyWord, MemoryMatch, IdleForge, TicTacToe, Minesweeper, Sudoku, BlockDrop, Solitaire, ConnectFour,
-  LightsOut, Blackjack, WordSearch, Checkers, Reversi, Hangman, Mastermind, Battleship, VideoPoker, Nonogram, SnakesLadders, Mahjong, Hanoi,
+  LightsOut, Blackjack, WordSearch, Checkers, Reversi, Hangman, Mastermind, Battleship, VideoPoker, Nonogram, SnakesLadders, Mahjong, Hanoi, LuckyReels,
 ];
 const ACCENTS = ['#ef476f', '#06d6a0', '#4895ef', '#ffd166', '#b388ff', '#ff7e6b'];
 
@@ -143,9 +144,10 @@ els.domRoot.addEventListener('exit-game', exitToHub);
 // ---- Canvas game-over flow ---------------------------------------------
 async function canvasGameOver(game, res) {
   Platform.gameplayStop();
-  const reward = Meta.report(game.id, { score: res.score });
+  const reward = Meta.report(game.id, { score: res.score, win: res.outcome === 'win' || res.outcome === 'jackpot' });
   const canRevive = !usedReviveThisRun && !!game.revive;
-  const action = await gameOverDialog({ score: res.score, best: res.best, high: res.high, canRevive, win: res.best, coins: reward.earned });
+  const win = res.outcome ? (res.outcome === 'win' || res.outcome === 'jackpot') : res.best;
+  const action = await gameOverDialog({ score: res.score, best: res.best, high: res.high, canRevive, win, coins: reward.earned, jackpot: res.outcome === 'jackpot' });
   if (action === 'revive') {
     const earned = await Money.showRewarded();
     if (earned && controller) { usedReviveThisRun = true; Platform.gameplayStart(); controller.revive(); }

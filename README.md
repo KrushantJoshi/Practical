@@ -1,6 +1,6 @@
 # TapForge 🎮
 
-A suite of **42 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
+A suite of **43 games** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
 
 One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for the app stores) **and web game portals** (Poki, CrazyGames, GameDistribution).
 
@@ -27,7 +27,7 @@ One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for t
 **Puzzle / brain**
 | Game | One-line |
 |---|---|
-| **Gem Blitz** | Match-3: swipe to match 3+, cascade combos |
+| **Gem Blitz** | Match-3 SAGA: clear escalating level goals |
 | **Merge 2048** | Swipe to merge tiles to 2048+ |
 | **Daily Word** | Wordle-style daily word + streaks |
 | **Memory Match** | Flip cards, find the pairs, rising levels |
@@ -39,6 +39,7 @@ One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for t
 | **Nonogram** | Picross: fill the grid from number clues |
 | **Mahjong** | Match free tiles; always-solvable deals |
 | **Tower of Hanoi** | Move the stack; smaller-on-larger only |
+| **Lucky Reels** | Free-spin slot machine; triple-7 jackpot |
 | **Lights Out** | Flip the grid off; each tap toggles a cross |
 | **Word Search** | Find hidden words in 8 directions |
 | **Hangman** | Guess the word before the figure completes |
@@ -64,7 +65,7 @@ Why these? Research (see [MONETIZATION.md](./MONETIZATION.md)) shows the most *a
 
 ## Engagement features (across every game)
 
-- **Juice:** screen shake + floating score popups (PERFECT!, combos) for satisfying game feel.
+- **Celebrations:** every win/loss triggers slot-machine-style FX — confetti, coin showers, flashes, a count-up reward reveal, and a jackpot blast for perfect runs (all generated, no assets). Plus screen-shake and combo popups.
 - **Coins + Achievements:** earn coins every run; 15 achievements with coin rewards, tracked across all games.
 - **Unlockable themes:** 6 cosmetic colour themes — the *only* thing coins buy. Never power. Unlock with coins or one optional rewarded ad.
 - **Opt-in rewarded revives, capped interstitials, one-time remove-ads** — the player-friendly money model (see MONETIZATION.md).
@@ -102,7 +103,7 @@ js/monetization.js      player-friendly ad policy (caps, remove-ads IAP)
 js/meta.js              coins + achievements (cross-game progression)
 js/themes.js            cosmetic unlockable themes (coin sink)
 js/ui.js                shared game-over dialog, toast, number formatting
-js/games/*.js           the 42 games (19 canvas + 23 DOM)
+js/games/*.js           the 43 games (19 canvas + 24 DOM)
 manifest.webmanifest    PWA install metadata
 service-worker.js       offline caching
 assets/                 CC0/OFL font + original icon  (see ASSETS.md)

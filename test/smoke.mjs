@@ -19,7 +19,7 @@ const DOM = [
   ['tictactoe', 'TicTacToe'], ['mines', 'Minesweeper'], ['sudoku', 'Sudoku'], ['tetris', 'BlockDrop'],
   ['solitaire', 'Solitaire'], ['connect4', 'ConnectFour'], ['lightsout', 'LightsOut'], ['blackjack', 'Blackjack'],
   ['wordsearch', 'WordSearch'], ['checkers', 'Checkers'], ['reversi', 'Reversi'], ['hangman', 'Hangman'],
-  ['mastermind', 'Mastermind'], ['battleship', 'Battleship'], ['videopoker', 'VideoPoker'], ['nonogram', 'Nonogram'], ['snakesladders', 'SnakesLadders'], ['mahjong', 'Mahjong'], ['hanoi', 'Hanoi'],
+  ['mastermind', 'Mastermind'], ['battleship', 'Battleship'], ['videopoker', 'VideoPoker'], ['nonogram', 'Nonogram'], ['snakesladders', 'SnakesLadders'], ['mahjong', 'Mahjong'], ['hanoi', 'Hanoi'], ['luckyreels', 'LuckyReels'],
 ];
 
 let err = 0;

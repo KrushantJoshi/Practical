@@ -139,14 +139,14 @@ export const Engine = (() => {
     }
 
     let onOver = null;
-    function end(finalScore) {
+    function end(finalScore, outcome) {
       if (over) return;             // end() fires once per run, even if update calls it repeatedly
       over = true;
       shakeAmt = 16;                // impact shake on death, for free, in every canvas game
       api.score = finalScore;
       const best = store.submit(game.id, finalScore);
       sfx.over(); haptic(40);
-      onOver && onOver({ score: finalScore, best, high: store.high(game.id) });
+      onOver && onOver({ score: finalScore, best, high: store.high(game.id), outcome });
     }
 
     function destroy() {

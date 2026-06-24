@@ -40,6 +40,7 @@ function coins() { return Engine.store.get('coins', 0); }
 
 export const Meta = {
   coins,
+  award(n) { add(n); },
   achievements() { return ACHIEVEMENTS.map(a => ({ ...a, done: Engine.store.get('ach_' + a.id, false) })); },
   playedCount() { return (Engine.store.get('played', []) || []).length; },
 
