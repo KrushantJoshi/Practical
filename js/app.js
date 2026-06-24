@@ -74,8 +74,12 @@ import { Piano } from './apps/piano.js';
 import { Sketch } from './apps/draw.js';
 import { Habits } from './apps/habits.js';
 import { Password } from './apps/password.js';
+import { Beats } from './apps/beats.js';
+import { Focus } from './apps/focus.js';
+import { Typing } from './apps/typing.js';
+import { Expense } from './apps/expense.js';
 
-const APPS = [Calculator, Converter, Stopwatch, Todo, Notes, TipCalc, Piano, Sketch, Habits, Password];
+const APPS = [Calculator, Converter, Stopwatch, Todo, Notes, TipCalc, Piano, Sketch, Habits, Password, Beats, Focus, Typing, Expense];
 
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,

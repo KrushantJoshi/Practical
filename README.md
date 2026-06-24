@@ -1,6 +1,6 @@
 # TapForge 🎮
 
-A suite of **49 games + 10 apps** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
+A suite of **49 games + 14 apps** — from one-tap hyper-casual to deep strategy — in one installable app. Built **for players, not whales** — no pay-to-win, no forced ads, no dark patterns. Pure vanilla JS, zero build step, zero dependencies, works offline.
 
 One codebase ships everywhere: **mobile** (PWA + a Capacitor/AdMob wrapper for the app stores) **and web game portals** (Poki, CrazyGames, GameDistribution).
 
@@ -84,6 +84,10 @@ A built-in **Apps** tab adds genuinely useful, offline tools alongside the games
 | **Sketchpad** | Canvas drawing: colours, brushes, undo |
 | **Habit Tracker** | Daily habits, 7-day grid, streaks |
 | **Password Generator** | Adjustable sets, strength meter, copy |
+| **Beat Maker** | 16-step WebAudio drum sequencer + presets |
+| **Focus Grove** | Gamified Pomodoro: grow a tree, earn coins |
+| **Typing Test** | Live WPM/accuracy, coin rewards, best WPM |
+| **Expense Tracker** | Log spending → animated donut chart |
 
 Why these? Research (see [MONETIZATION.md](./MONETIZATION.md)) shows the most *addictive yet simple* genres are **hyper-casual arcade**, **puzzle/match-3** (the #1 download & top-grossing casual genres), and **idle/incremental** (the highest retention) — plus deeper strategy/action titles for longer sessions. The mix covers quick-session play, daily-habit retention (Daily Word streaks), and long-term progression (Idle Forge, Grid Defense).
 
@@ -129,7 +133,7 @@ js/themes.js            cosmetic unlockable themes (coin sink)
 js/ui.js                shared game-over dialog, toast, number formatting
 js/fx.js                celebration FX — confetti, coin showers, jackpot, reward count-up
 js/games/*.js           the 49 games (19 canvas + 30 DOM)
-js/apps/*.js            the 10 utility apps (Calculator, Piano, Sketchpad, …)
+js/apps/*.js            the 14 apps (Beat Maker, Focus Grove, Typing, …)
 manifest.webmanifest    PWA install metadata
 service-worker.js       offline caching
 assets/                 CC0/OFL font + original icon  (see ASSETS.md)

@@ -46,6 +46,7 @@ const APPS = [
   ['calculator', 'Calculator'], ['converter', 'Converter'], ['stopwatch', 'Stopwatch'],
   ['notes', 'Notes'], ['todo', 'Todo'], ['tip', 'TipCalc'],
   ['piano', 'Piano'], ['draw', 'Sketch'], ['habits', 'Habits'], ['password', 'Password'],
+  ['beats', 'Beats'], ['focus', 'Focus'], ['typing', 'Typing'], ['expense', 'Expense'],
 ];
 for (const [f, n] of APPS) {
   try { const a = (await import(`../js/apps/${f}.js`))[n]; const r = make(); const c = a.mount(r); c && c.destroy && c.destroy(); }
