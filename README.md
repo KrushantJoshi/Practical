@@ -103,6 +103,7 @@ js/monetization.js      player-friendly ad policy (caps, remove-ads IAP)
 js/meta.js              coins + achievements (cross-game progression)
 js/themes.js            cosmetic unlockable themes (coin sink)
 js/ui.js                shared game-over dialog, toast, number formatting
+js/fx.js                celebration FX — confetti, coin showers, jackpot, reward count-up
 js/games/*.js           the 43 games (19 canvas + 24 DOM)
 manifest.webmanifest    PWA install metadata
 service-worker.js       offline caching
