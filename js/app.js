@@ -106,6 +106,7 @@ const els = {
   openSettings: document.getElementById('open-settings'),
   tabGames: document.getElementById('tab-games'),
   tabApps: document.getElementById('tab-apps'),
+  search: document.getElementById('hub-search'),
   openSpin: document.getElementById('open-spin'),
   openChallenges: document.getElementById('open-challenges'),
 };
@@ -114,17 +115,21 @@ let controller = null;
 let currentGame = null;
 let usedReviveThisRun = false;
 let activeTab = 'games';
+let search = '';
 
 // ---- Hub ----------------------------------------------------------------
 function renderHub() {
   Meta.refresh();
   els.coins.textContent = '🪙 ' + Meta.coins();
   els.grid.innerHTML = '';
-  const items = activeTab === 'games' ? GAMES : APPS;
+  const q = search.trim().toLowerCase();
+  const items = (activeTab === 'games' ? GAMES : APPS).filter(g => !q || g.name.toLowerCase().includes(q) || g.tagline.toLowerCase().includes(q));
+  if (!items.length) els.grid.innerHTML = `<div class="hub-noresults">No matches for “${search}”.</div>`;
   items.forEach((g, i) => {
     const card = document.createElement('button');
     card.className = 'card';
     card.style.setProperty('--accent', ACCENTS[i % ACCENTS.length]);
+    card.style.animationDelay = Math.min(i * 18, 360) + 'ms';
     const stat = activeTab === 'games' ? (g.stat ? g.stat(Engine.store) : ('Best: ' + Engine.store.high(g.id))) : '';
     card.innerHTML = `
       <div class="card-name">${g.name}</div>
@@ -138,7 +143,7 @@ function renderHub() {
   els.openSpin.classList.toggle('ready', Meta.spinAvailable());
   els.openChallenges.classList.toggle('ready', Meta.challenges().some(c => c.done && !c.claimed));
 }
-function setTab(t) { activeTab = t; els.tabGames.classList.toggle('active', t === 'games'); els.tabApps.classList.toggle('active', t === 'apps'); renderHub(); }
+function setTab(t) { activeTab = t; search = ''; if (els.search) els.search.value = ''; els.tabGames.classList.toggle('active', t === 'games'); els.tabApps.classList.toggle('active', t === 'apps'); renderHub(); }
 
 // ---- Launch / exit ------------------------------------------------------
 function launch(game) {
@@ -197,6 +202,7 @@ els.sound.textContent = Engine.store.get('sound', true) ? '🔊' : '🔇';
 els.noads.onclick = async () => { if (await Money.buyRemoveAds()) renderHub(); };
 els.tabGames.onclick = () => setTab('games');
 els.tabApps.onclick = () => setTab('apps');
+els.search.addEventListener('input', () => { search = els.search.value; renderHub(); });
 els.openSpin.onclick = async () => {
   if (!Meta.spinAvailable()) { const ov = closableOverlay(`<div class="over-title">🎡 Daily Spin</div><div class="over-high">Come back tomorrow for your free spin!</div>`); return; }
   await showSpinWheel(); renderHub();

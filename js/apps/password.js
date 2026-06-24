@@ -30,7 +30,6 @@ export const Password = {
       const r = rand(len); let p = '';
       for (let i = 0; i < len; i++) p += pool[r[i] % pool.length];
       outEl.textContent = p; Engine.sfx.tap();
-      const sets = Object.keys(SETS).filter(k => on[k]).length;
       const bits = len * Math.log2(pool.length || 1);
       const pct = Math.min(100, bits / 1.28);
       bar.style.width = pct + '%'; bar.style.background = pct > 75 ? '#06d6a0' : pct > 45 ? '#ffd166' : '#ef476f';

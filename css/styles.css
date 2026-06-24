@@ -659,3 +659,10 @@ body {
 .ch-info small { color: var(--muted); font-size: 11px; }
 .ch-claim { background: #06d6a0; color: #04231a; border: none; border-radius: 10px; padding: 10px 12px; font-weight: 800; cursor: pointer; white-space: nowrap; }
 .ch-claim:disabled { background: #2a3052; color: var(--muted); }
+
+/* ---------- Hub search + card animation ---------- */
+.hub-search { width: 100%; margin-top: 10px; padding: 11px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.1); background: var(--bg2); color: var(--fg); font-size: 15px; }
+.hub-search::placeholder { color: var(--muted); }
+.hub-noresults { color: var(--muted); text-align: center; padding: 40px; grid-column: 1 / -1; }
+.card { animation: card-in .32s ease both; }
+@keyframes card-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
