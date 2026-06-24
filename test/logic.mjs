@@ -124,6 +124,16 @@ const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
     ck('mahjong peel order solves the board', okOrder && occ.size === 0);
   }
 }
+
+// ---- Calculator parser ----
+{
+  const { evaluate } = await import('../js/apps/calculator.js');
+  ck('calc precedence', evaluate('2+3*4') === 14);
+  ck('calc parens', evaluate('(2+3)*4') === 20);
+  ck('calc unary minus', evaluate('-5+8') === 3);
+  ck('calc decimals/div', Math.abs(evaluate('7/2') - 3.5) < 1e-9);
+}
+
 // ---- Sudoku generator validity ----
 {
   const ok = (b, i, n) => { const r = Math.floor(i / 9), c = i % 9, br = r - r % 3, bc = c - c % 3; for (let k = 0; k < 9; k++) { if (b[r * 9 + k] === n || b[k * 9 + c] === n) return false; if (b[(br + Math.floor(k / 3)) * 9 + bc + k % 3] === n) return false; } return true; };

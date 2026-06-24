@@ -63,6 +63,16 @@ import { IdleTycoon } from './games/idletycoon.js';
 import { FloodIt } from './games/floodit.js';
 import { Chess } from './games/chess.js';
 
+// apps
+import { Calculator } from './apps/calculator.js';
+import { Converter } from './apps/converter.js';
+import { Stopwatch } from './apps/stopwatch.js';
+import { Notes } from './apps/notes.js';
+import { Todo } from './apps/todo.js';
+import { TipCalc } from './apps/tip.js';
+
+const APPS = [Calculator, Converter, Stopwatch, Todo, Notes, TipCalc];
+
 const GAMES = [
   ReflexRing, TowerStack, ColorRush, SkyHop, NeonSnake, Dodge, BrickOut, Echo, QuickTap, TapTiles,
   GemBlitz, SkyClimb, DashRun, StarBlaster, GridDefense, AirHockey, BubblePop, Maze, RoadCross,
@@ -85,32 +95,37 @@ const els = {
   openAch: document.getElementById('open-ach'),
   openThemes: document.getElementById('open-themes'),
   openSettings: document.getElementById('open-settings'),
+  tabGames: document.getElementById('tab-games'),
+  tabApps: document.getElementById('tab-apps'),
 };
 
 let controller = null;
 let currentGame = null;
 let usedReviveThisRun = false;
+let activeTab = 'games';
 
 // ---- Hub ----------------------------------------------------------------
 function renderHub() {
   Meta.refresh();
   els.coins.textContent = '🪙 ' + Meta.coins();
   els.grid.innerHTML = '';
-  GAMES.forEach((g, i) => {
+  const items = activeTab === 'games' ? GAMES : APPS;
+  items.forEach((g, i) => {
     const card = document.createElement('button');
     card.className = 'card';
     card.style.setProperty('--accent', ACCENTS[i % ACCENTS.length]);
-    const stat = g.stat ? g.stat(Engine.store) : ('Best: ' + Engine.store.high(g.id));
+    const stat = activeTab === 'games' ? (g.stat ? g.stat(Engine.store) : ('Best: ' + Engine.store.high(g.id))) : '';
     card.innerHTML = `
       <div class="card-name">${g.name}</div>
       <div class="card-tag">${g.tagline}</div>
-      <div class="card-high">${stat}</div>
-      <div class="card-play">Play ▸</div>`;
+      ${stat ? `<div class="card-high">${stat}</div>` : ''}
+      <div class="card-play">${activeTab === 'games' ? 'Play' : 'Open'} ▸</div>`;
     card.onclick = () => launch(g);
     els.grid.appendChild(card);
   });
   els.noads.style.display = Money.state.removeAds ? 'none' : 'block';
 }
+function setTab(t) { activeTab = t; els.tabGames.classList.toggle('active', t === 'games'); els.tabApps.classList.toggle('active', t === 'apps'); renderHub(); }
 
 // ---- Launch / exit ------------------------------------------------------
 function launch(game) {
@@ -167,6 +182,8 @@ els.back.onclick = exitToHub;
 els.sound.onclick = () => { const on = !Engine.store.get('sound', true); Engine.store.set('sound', on); els.sound.textContent = on ? '🔊' : '🔇'; };
 els.sound.textContent = Engine.store.get('sound', true) ? '🔊' : '🔇';
 els.noads.onclick = async () => { if (await Money.buyRemoveAds()) renderHub(); };
+els.tabGames.onclick = () => setTab('games');
+els.tabApps.onclick = () => setTab('apps');
 
 // ---- Achievements + Themes overlays ------------------------------------
 function closableOverlay(innerHTML) {

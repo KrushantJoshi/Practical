@@ -41,5 +41,15 @@ for (const [f, n] of DOM) {
   try { const g = (await import(`../js/games/${f}.js`))[n]; const r = make(); const c = g.mount(r); c && c.destroy && c.destroy(); }
   catch (e) { console.log(`DOM ${f} ERROR: ${e.message}`); err++; }
 }
-console.log(err ? `SMOKE: ${err} error(s)` : `SMOKE PASS: ${CANVAS.length} canvas + ${DOM.length} DOM games + app.js OK`);
+
+const APPS = [
+  ['calculator', 'Calculator'], ['converter', 'Converter'], ['stopwatch', 'Stopwatch'],
+  ['notes', 'Notes'], ['todo', 'Todo'], ['tip', 'TipCalc'],
+];
+for (const [f, n] of APPS) {
+  try { const a = (await import(`../js/apps/${f}.js`))[n]; const r = make(); const c = a.mount(r); c && c.destroy && c.destroy(); }
+  catch (e) { console.log(`APP ${f} ERROR: ${e.message}`); err++; }
+}
+
+console.log(err ? `SMOKE: ${err} error(s)` : `SMOKE PASS: ${CANVAS.length} canvas + ${DOM.length} DOM games + ${APPS.length} apps + app.js OK`);
 process.exit(err ? 1 : 0);
