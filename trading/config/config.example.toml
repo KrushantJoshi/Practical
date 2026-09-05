@@ -5,7 +5,7 @@
 
 account_equity_start = 500.0
 base_currency = "USD"
-state_dir = "trading/state"
+state_dir = "state"   # relative to this file's project root, not your cwd
 
 equity_universe = ["SPY", "QQQ", "IWM"]
 crypto_universe = ["BTC/USDT", "ETH/USDT", "SOL/USDT"]

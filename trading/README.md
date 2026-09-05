@@ -37,9 +37,17 @@ $8/month, which is less than a VPS.
 ## Design
 
 ```
-INGEST → ALPHA → SCREENS → COUNCIL (veto/shrink only) → RISK CORE → EXECUTION
-                                                         ↑ final word
+SIGNAL → RISK GATE → COUNCIL (veto/shrink) → RISK GATE again → EXECUTION
+              ↑                                      ↑
+       deterministic                          final size comes from
+       authority to trade                     the risk layer, not the model
 ```
+
+The gate runs **before** the council so no tokens are spent on candidates
+deterministic code already rejected — and so the council can never be the reason
+a trade happens, only a reason one doesn't. It runs **again** afterwards because
+the council returns a multiplier, and the final quantity must be produced by the
+risk layer rather than by scaling a number the model saw.
 
 The invariant: **deterministic code decides to trade; the council may only veto
 or shrink.** `risk/` imports nothing from `research/`. See
@@ -74,10 +82,13 @@ corroboration. Folding rules:
 | `risk/limits.py` | ✅ 15-check pre-trade gate modelled on SEC Rule 15c3-5 |
 | `research/llm.py` | ✅ Grok client (stdlib urllib), strict JSON schema, cost tracking |
 | `research/council.py` | ✅ Multi-seat council; unanimity to proceed, min-size fold |
-| `tests/` | ✅ 56 tests, incl. clamp fuzzing and prompt-injection cases |
-| `ingest/`, `alpha/`, `screens/` | ⬜ Not built |
-| `execution/` | ⬜ Not built |
-| `engine/`, `backtest/`, `ops/` | ⬜ Not built |
+| `execution/paper.py` | ✅ Pessimistic paper broker; idempotent, reduce-only safe |
+| `engine/pipeline.py` | ✅ gate → council → re-gate → execute, fully journalled |
+| `cli.py` | ✅ `demo`, `status`, `halt`, `resume` |
+| `tests/` | ✅ 85 tests: clamp fuzzing, prompt injection, stage ordering |
+| `ingest/`, `alpha/`, `screens/` | ⬜ Not built — no live signal source yet |
+| `execution/alpaca.py`, `ccxt.py`, `solana.py` | ⬜ Not built |
+| `engine/reconcile.py`, `backtest/`, `ops/` | ⬜ Not built |
 
 Core is **stdlib-only** (Python 3.11 `tomllib`, `sqlite3`), so it runs with no
 install. Third-party dependencies stay isolated in adapters.
@@ -86,9 +97,26 @@ install. Third-party dependencies stay isolated in adapters.
 
 ```bash
 cd trading
-python3 -m unittest discover -s tests -t .     # 33 tests
+python3 -m unittest discover -s tests -t .        # 85 tests, no deps
 cp config/config.example.toml config/config.toml
+
+PYTHONPATH=src python3 -m tradebot demo           # end-to-end paper pass
+PYTHONPATH=src python3 -m tradebot status
+PYTHONPATH=src python3 -m tradebot halt --reason "stepping away"
+PYTHONPATH=src python3 -m tradebot resume --by yourname
 ```
+
+`demo` runs three candidates through the real pipeline against the paper broker,
+with no API key and no network:
+
+```
+healthy trade                    -> filled         filled 0.50000000 @ 100.200075 fee 0.0501
+edge too small for costs         -> risk_blocked   round-trip cost 70bps is 175% of the 40bps expected edge (cap 33%)
+stop inside the noise band       -> risk_blocked   stop 2bps away is inside the noise band (min 50bps)
+```
+
+The halt latch persists in SQLite, so it survives restarts — `halt` then `demo`
+and every candidate is refused until someone named clears it.
 
 Secrets come from the environment only, never from config:
 
@@ -109,7 +137,10 @@ trading/
   docs/RISK_POLICY.md          # invariants, gate, breakers, promotion gate
   src/tradebot/
     types.py  config.py  storage.py
-    risk/      sizing.py  circuit.py  limits.py
-    research/  llm.py     council.py
-  tests/test_risk.py  tests/test_council.py
+    cli.py     __main__.py
+    risk/       sizing.py  circuit.py  limits.py
+    research/   llm.py     council.py
+    execution/  base.py    paper.py
+    engine/     pipeline.py
+  tests/  test_risk.py  test_council.py  test_execution.py  test_pipeline.py
 ```

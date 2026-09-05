@@ -138,7 +138,11 @@ class ScheduleConfig:
 class Config:
     account_equity_start: float = 10_000.0
     base_currency: str = "USD"
-    state_dir: str = "trading/state"
+    # Relative paths resolve against the config file's project root, not the
+    # current working directory — otherwise running from a different directory
+    # silently creates a second, empty state database.
+    state_dir: str = "state"
+    config_path: str = ""
     risk: RiskConfig = field(default_factory=RiskConfig)
     memecoin: MemecoinScreenConfig = field(default_factory=MemecoinScreenConfig)
     research: ResearchConfig = field(default_factory=ResearchConfig)
@@ -146,6 +150,15 @@ class Config:
     schedule: ScheduleConfig = field(default_factory=ScheduleConfig)
     equity_universe: tuple[str, ...] = ()
     crypto_universe: tuple[str, ...] = ()
+
+    @property
+    def resolved_state_dir(self) -> Path:
+        """Absolute state directory, stable regardless of the working directory."""
+        p = Path(self.state_dir)
+        if p.is_absolute() or not self.config_path:
+            return p
+        # config lives at <root>/config/config.toml, so the root is two up.
+        return (Path(self.config_path).resolve().parent.parent / p).resolve()
 
     @property
     def live(self) -> bool:
@@ -207,6 +220,7 @@ def load(path: str | Path) -> Config:
         state_dir=top.state_dir,
         equity_universe=top.equity_universe,
         crypto_universe=top.crypto_universe,
+        config_path=str(p.resolve()),
         **sections,
     )
     validate(cfg)
