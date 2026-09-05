@@ -45,6 +45,23 @@ The invariant: **deterministic code decides to trade; the council may only veto
 or shrink.** `risk/` imports nothing from `research/`. See
 [docs/RISK_POLICY.md](docs/RISK_POLICY.md).
 
+### The council
+
+Narrow single-purpose seats — `microstructure`, `fundamental`, `sentiment`,
+`devils_advocate` — each shown a *different slice* of evidence, because several
+models given the same bad input fail the same way and would look like
+corroboration. Folding rules:
+
+- **Any veto kills the trade.** Unanimity to proceed, never majority: with
+  veto-only authority, unanimity costs opportunities and cannot cost money.
+- **Size is the minimum across seats, never the mean** — averaging lets optimism
+  dilute a specific concern.
+- **An unreachable or malformed seat is a veto**, not a skip. Malformed output is
+  never retried into an approval.
+- The output schema exposes no field for price, quantity, leverage or symbol, so
+  even a fully successful prompt injection cannot enlarge a position. That is
+  asserted directly in `tests/test_council.py`.
+
 ## What exists
 
 | Module | Status |
@@ -55,9 +72,10 @@ or shrink.** `risk/` imports nothing from `research/`. See
 | `risk/sizing.py` | ✅ Risk-first sizing, fractional Kelly, risk of ruin |
 | `risk/circuit.py` | ✅ Breakers incl. loss-velocity and fee-budget; persisted latch |
 | `risk/limits.py` | ✅ 15-check pre-trade gate modelled on SEC Rule 15c3-5 |
-| `tests/` | ✅ 33 tests, including a 2,000-case fuzz of the clamp invariant |
+| `research/llm.py` | ✅ Grok client (stdlib urllib), strict JSON schema, cost tracking |
+| `research/council.py` | ✅ Multi-seat council; unanimity to proceed, min-size fold |
+| `tests/` | ✅ 56 tests, incl. clamp fuzzing and prompt-injection cases |
 | `ingest/`, `alpha/`, `screens/` | ⬜ Not built |
-| `research/` (Grok council) | ⬜ Not built |
 | `execution/` | ⬜ Not built |
 | `engine/`, `backtest/`, `ops/` | ⬜ Not built |
 
@@ -91,6 +109,7 @@ trading/
   docs/RISK_POLICY.md          # invariants, gate, breakers, promotion gate
   src/tradebot/
     types.py  config.py  storage.py
-    risk/     sizing.py  circuit.py  limits.py
-  tests/test_risk.py
+    risk/      sizing.py  circuit.py  limits.py
+    research/  llm.py     council.py
+  tests/test_risk.py  tests/test_council.py
 ```
