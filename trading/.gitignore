@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+state/*.db
+state/*.db-wal
+state/*.db-shm
+config/config.toml
+.venv/

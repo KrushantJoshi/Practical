@@ -1,0 +1,93 @@
+# Copy to config.toml and edit. Secrets NEVER go here — only in the environment.
+#
+# Calibrated for a $500 account. The comments explain why each number is what it
+# is; see docs/RESEARCH_FINDINGS.md for the evidence behind them.
+
+account_equity_start = 500.0
+base_currency = "USD"
+state_dir = "trading/state"
+
+equity_universe = ["SPY", "QQQ", "IWM"]
+crypto_universe = ["BTC/USDT", "ETH/USDT", "SOL/USDT"]
+
+[execution]
+# paper until the promotion gate in docs/RISK_POLICY.md is met.
+# Going live ALSO requires the environment variable TRADEBOT_ALLOW_LIVE=yes.
+mode = "paper"
+equity_venue = "paper"     # paper | alpaca   (Alpaca: $0 commission, $0 minimum)
+crypto_venue = "paper"     # paper | ccxt
+memecoin_venue = "paper"   # paper | solana
+order_type = "limit"       # market orders on thin books are a donation
+limit_offset_bps = 10.0
+fee_bps_assumed = 10.0
+slippage_bps_assumed = 15.0
+
+[risk]
+# 0.5% of equity = $2.50 risked per trade. At 1% risk per trade a 55%-win-rate
+# system has ~0.004% risk of ruin; at 5% it is ~13.4%. The difference is ~3,300x
+# for 5x the return, which is why this number is small and stays small.
+risk_per_trade = 0.005
+max_position_pct = 0.10          # $50 max in any one position
+max_gross_exposure = 1.0         # no leverage
+max_open_positions = 4
+max_per_bucket = 2
+daily_loss_halt_pct = 0.03       # -$15 stops the session
+max_drawdown_halt_pct = 0.12     # -$60 from peak stops everything
+
+# The single most important limit at this account size. A round trip at $500
+# notional costs ~10% of the amount risked, so an edge that does not clearly
+# clear its own cost is a fee payment with a lottery ticket attached.
+max_cost_to_edge_ratio = 0.33
+max_spread_bps = 60.0
+min_stop_bps = 50.0
+
+# Turnover ceilings. A runaway loop is a risk event, not a feature.
+max_trades_per_hour = 6
+max_trades_per_day = 20
+
+[risk.class_caps]
+# Fraction of equity permitted per asset class.
+equity = 0.60
+crypto = 0.50
+# 98.6% of pump.fun tokens end up rugs or worthless, and at $500 a memecoin
+# sleeve cannot be sized large enough to buy real tail exposure while staying
+# above the point where fixed costs dominate. Default is zero; see
+# docs/RESEARCH_FINDINGS.md section 5 before changing it.
+memecoin = 0.0
+
+[memecoin]
+# Only consulted if class_caps.memecoin > 0. Every field is a hard gate.
+min_liquidity_usd = 25000.0
+min_age_seconds = 900.0
+max_age_seconds = 172800.0
+min_unique_holders = 150
+top_holder_concentration_max = 0.25
+top_holder_count = 10
+max_creator_hold_pct = 0.05
+require_mint_authority_revoked = true
+require_freeze_authority_revoked = true
+require_lp_burned_or_locked = true
+max_gain_since_launch_pct = 400.0
+max_gain_last_5m_pct = 40.0
+min_unique_traders_5m = 25
+max_single_wallet_volume_share = 0.20
+max_buy_tax_pct = 2.0
+max_sell_tax_pct = 2.0
+max_slippage_bps = 300.0
+
+[research]
+provider = "xai"              # none | anthropic | xai
+model = "grok-4"              # verify the current model id against xAI's docs
+enabled = true
+fail_open = false             # no research -> no trade. Never flip this to true.
+timeout_seconds = 30.0
+max_calls_per_hour = 60
+cache_ttl_seconds = 900.0
+
+[schedule]
+equity_poll_seconds = 60.0
+crypto_poll_seconds = 30.0
+memecoin_poll_seconds = 20.0
+research_poll_seconds = 300.0
+reconcile_seconds = 120.0
+equity_extended_hours = false
