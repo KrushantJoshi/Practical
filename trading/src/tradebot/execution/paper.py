@@ -12,11 +12,12 @@ always pay fees, and reject anything the venue's own minimums would reject.
 from __future__ import annotations
 
 import itertools
+import json
 from dataclasses import dataclass, field, replace
 from typing import Dict, Optional, Sequence
 
 from ..types import (AssetClass, Fill, Instrument, Order, Position, Quote,
-                     Side)
+                     Side, Venue)
 from .base import Ack, BrokerError, OrderRejected
 
 
@@ -186,6 +187,52 @@ class PaperBroker:
         ack = self.submit(order, f"flat-{instrument.key}-{next(self._ids)}",
                           reduce_only=True)
         return ack.fill
+
+    # -- persistence ------------------------------------------------------
+    #
+    # The promotion gate in docs/RISK_POLICY.md requires a 30-day paper run,
+    # which is impossible if the venue's state dies with the process. These let
+    # the CLI checkpoint the simulated venue between invocations.
+
+    def state_dict(self) -> dict:
+        return {
+            "cash": self._cash,
+            "fees_paid": self.fees_paid,
+            "realised_pnl": self.realised_pnl,
+            "next_id": next(self._ids),
+            "seen_client_ids": dict(self._seen_client_ids),
+            "positions": [
+                {"symbol": p.instrument.symbol,
+                 "asset_class": p.instrument.asset_class.value,
+                 "venue": p.instrument.venue.value,
+                 "qty": p.qty, "avg_price": p.avg_price,
+                 "stop_price": p.stop_price,
+                 "take_profit_price": p.take_profit_price,
+                 "high_water": p.high_water, "opened_ts": p.opened_ts}
+                for p in self._positions.values()
+            ],
+        }
+
+    def load_state(self, data: dict) -> None:
+        self._cash = float(data.get("cash", self._cash))
+        self.fees_paid = float(data.get("fees_paid", 0.0))
+        self.realised_pnl = float(data.get("realised_pnl", 0.0))
+        self._ids = itertools.count(int(data.get("next_id", 1)))
+        # Client-order ids must survive too, or a retry after a restart would
+        # no longer be recognised as a duplicate and would open a second
+        # position — the exact failure the idempotency key exists to prevent.
+        self._seen_client_ids = dict(data.get("seen_client_ids", {}))
+        self._positions = {}
+        for row in data.get("positions", []):
+            inst = Instrument(symbol=row["symbol"],
+                              asset_class=AssetClass(row["asset_class"]),
+                              venue=Venue(row["venue"]))
+            self._positions[inst.key] = Position(
+                instrument=inst, qty=row["qty"], avg_price=row["avg_price"],
+                stop_price=row.get("stop_price"),
+                take_profit_price=row.get("take_profit_price"),
+                high_water=row.get("high_water", 0.0),
+                opened_ts=row.get("opened_ts", 0.0))
 
     def flatten_all(self) -> int:
         n = 0

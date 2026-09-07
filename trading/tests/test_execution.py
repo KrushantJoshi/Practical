@@ -156,5 +156,66 @@ class TestAccounting(unittest.TestCase):
             b.submit(Order.create(INST, Side.BUY, 1.0, "s1"), "c1")
 
 
+class TestPersistence(unittest.TestCase):
+    """The promotion gate needs a 30-day paper run, which is impossible if the
+    simulated venue's state dies with the process."""
+
+    def setUp(self):
+        self.b = PaperBroker(500.0)
+        self.b.set_quote(quote())
+
+    def _reload(self) -> PaperBroker:
+        fresh = PaperBroker(500.0)
+        fresh.load_state(self.b.state_dict())
+        fresh.set_quote(quote())
+        return fresh
+
+    def test_positions_survive_a_restart(self):
+        self.b.submit(Order.create(INST, Side.BUY, 1.0, "s1"), "c1")
+        restored = self._reload()
+        self.assertAlmostEqual(restored.position(INST).qty, 1.0)
+        self.assertAlmostEqual(restored.position(INST).avg_price,
+                               self.b.position(INST).avg_price)
+
+    def test_cash_and_fees_survive_a_restart(self):
+        self.b.submit(Order.create(INST, Side.BUY, 1.0, "s1"), "c1")
+        restored = self._reload()
+        self.assertAlmostEqual(restored.cash, self.b.cash)
+        self.assertAlmostEqual(restored.fees_paid, self.b.fees_paid)
+        self.assertAlmostEqual(restored.equity(), self.b.equity())
+
+    def test_stop_price_survives_a_restart(self):
+        order = Order.create(INST, Side.BUY, 1.0, "s1", stop_price=95.0)
+        self.b.submit(order, "c1")
+        self.assertAlmostEqual(self._reload().position(INST).stop_price, 95.0)
+
+    def test_client_order_ids_survive_so_retries_stay_idempotent(self):
+        """Without this, a retry after a restart would no longer be recognised
+        as a duplicate and would open a second position — the exact failure the
+        idempotency key exists to prevent."""
+        order = Order.create(INST, Side.BUY, 1.0, "s1")
+        self.b.submit(order, "retry-me")
+        restored = self._reload()
+        ack = restored.submit(order, "retry-me")
+        self.assertIn("duplicate", ack.message)
+        self.assertAlmostEqual(restored.position(INST).qty, 1.0)
+
+    def test_realised_pnl_survives_a_restart(self):
+        b = PaperBroker(500.0, PaperConfig(fee_bps=0.0, slippage_bps=0.0))
+        b.set_quote(quote(100.0, spread_bps=0.0))
+        b.submit(Order.create(INST, Side.BUY, 1.0, "s1"), "c1")
+        b.set_quote(quote(110.0, spread_bps=0.0))
+        b.flatten(INST)
+        fresh = PaperBroker(500.0)
+        fresh.load_state(b.state_dict())
+        self.assertAlmostEqual(fresh.realised_pnl, 10.0, places=6)
+
+    def test_empty_state_is_a_clean_start(self):
+        fresh = PaperBroker(500.0)
+        fresh.load_state({})
+        self.assertEqual(fresh.cash, 500.0)
+        self.assertEqual(fresh.positions(), ())
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

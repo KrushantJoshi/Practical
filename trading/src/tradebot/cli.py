@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -16,14 +17,33 @@ from .alpha.carry import break_even_periods, net_apy, round_trip_cost_bps
 from .config import Config, load
 from .execution.paper import PaperBroker, PaperConfig
 from .engine.pipeline import Pipeline
+from .engine.reconcile import Reconciler
 from .risk.circuit import CircuitBreaker
 from .risk.limits import GateContext, PortfolioState, PreTradeGate, VenueRules
 from .storage import Storage
 from .types import AssetClass, Instrument, Quote, Side, Signal, Venue
 
 
+PAPER_STATE_KEY = "paper_broker_state"
+
+
 def _storage(cfg: Config) -> Storage:
     return Storage(cfg.resolved_state_dir / "tradebot.db")
+
+
+def _paper_broker(cfg: Config, st: Storage) -> PaperBroker:
+    """Paper venue, restored from the last checkpoint if there is one."""
+    broker = PaperBroker(cfg.account_equity_start,
+                         PaperConfig(fee_bps=cfg.execution.fee_bps_assumed,
+                                     slippage_bps=cfg.execution.slippage_bps_assumed))
+    saved = st.get_meta(PAPER_STATE_KEY)
+    if saved:
+        broker.load_state(json.loads(saved))
+    return broker
+
+
+def _save_paper(st: Storage, broker: PaperBroker) -> None:
+    st.set_meta(PAPER_STATE_KEY, json.dumps(broker.state_dict()))
 
 
 def cmd_status(cfg: Config) -> int:
@@ -77,9 +97,7 @@ def cmd_demo(cfg: Config) -> int:
     exactly where a candidate dies.
     """
     st = _storage(cfg)
-    broker = PaperBroker(cfg.account_equity_start,
-                         PaperConfig(fee_bps=cfg.execution.fee_bps_assumed,
-                                     slippage_bps=cfg.execution.slippage_bps_assumed))
+    broker = _paper_broker(cfg, st)
     inst = Instrument(symbol="BTC/USDT", asset_class=AssetClass.CRYPTO,
                       venue=Venue.PAPER)
     quote = Quote(instrument=inst, bid=99.95, ask=100.05, last=100.0)
@@ -87,8 +105,20 @@ def cmd_demo(cfg: Config) -> int:
 
     gate = PreTradeGate(cfg.risk, fee_bps=cfg.execution.fee_bps_assumed,
                         slippage_bps=cfg.execution.slippage_bps_assumed)
+    breaker = CircuitBreaker(st)
+
+    # Nothing trades before state has been verified against the venue once.
+    reconciler = Reconciler(broker=broker, storage=st, breaker=breaker)
+    pre = reconciler.startup()
+    if not pre.ok:
+        print(f"startup reconciliation failed: {pre.error}", file=sys.stderr)
+        st.close()
+        return 1
+    print(f"reconciled: {len(pre.discrepancies)} discrepancy(ies), "
+          f"{pre.cancelled_orders} stray order(s) cancelled")
+
     pipeline = Pipeline(gate=gate, broker=broker, storage=st,
-                        breaker=CircuitBreaker(st), council=None)
+                        breaker=breaker, council=None)
 
     scenarios = [
         ("healthy trade", 98.0, 400.0),
@@ -104,11 +134,13 @@ def cmd_demo(cfg: Config) -> int:
             bucket="crypto_majors", venue=VenueRules(min_notional=5.0),
             portfolio=PortfolioState(
                 equity=broker.equity(), cash=broker.cash,
-                gross_exposure=0.0, open_positions=len(broker.positions())),
+                gross_exposure=0.0, open_positions=len(broker.positions()),
+                reconcile_age_s=reconciler.age_s()),
             expected_edge_bps=edge)
         result = pipeline.run(ctx)
         print(f"{label:<32} -> {result.decision.value:<14} {result.note}")
 
+    _save_paper(st, broker)
     print(f"\nequity after : ${broker.equity():.2f}")
     print(f"fees paid    : ${broker.fees_paid:.4f}")
     print(f"journalled   : {len(st.decisions_since(0))} decisions")
@@ -153,6 +185,30 @@ def cmd_carry_table(cfg: Config, fee_bps: float, spread_bps: float,
     return 0
 
 
+def cmd_reconcile(cfg: Config) -> int:
+    """Compare the ledger against the venue and report any disagreement."""
+    st = _storage(cfg)
+    broker = _paper_broker(cfg, st)
+    breaker = CircuitBreaker(st)
+    result = Reconciler(broker=broker, storage=st, breaker=breaker).check()
+
+    if result.error:
+        print(f"venue unreachable: {result.error}", file=sys.stderr)
+        st.close()
+        return 1
+    if not result.discrepancies:
+        print("clean — ledger agrees with the venue")
+    for d in result.discrepancies:
+        print(f"  [{d.severity.value:<8}] {d.key}: "
+              f"local={d.local_qty:.8f} venue={d.venue_qty:.8f} — {d.detail}")
+    if result.halted:
+        print(f"\nHALTED ({result.halted}). Positions in dispute were flattened.")
+        print("Clear it with: tradebot resume --by <name> --kind "
+              f"{result.halted}")
+    st.close()
+    return 0 if result.ok else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="tradebot")
     ap.add_argument("--config", default="config/config.toml",
@@ -160,6 +216,7 @@ def main(argv: list[str] | None = None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status")
     sub.add_parser("demo")
+    sub.add_parser("reconcile")
     p_carry = sub.add_parser("carry-table",
                              help="break-even economics for funding carry")
     p_carry.add_argument("--fee-bps", type=float, default=10.0,
@@ -188,6 +245,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_status(cfg)
     if args.cmd == "demo":
         return cmd_demo(cfg)
+    if args.cmd == "reconcile":
+        return cmd_reconcile(cfg)
     if args.cmd == "carry-table":
         return cmd_carry_table(cfg, args.fee_bps, args.spread_bps,
                                args.equity or cfg.account_equity_start)

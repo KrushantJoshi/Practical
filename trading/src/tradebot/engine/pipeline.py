@@ -132,6 +132,11 @@ class Pipeline:
                 qty=ack.fill.qty, price=ack.fill.price, fee=ack.fill.fee,
                 venue_fill_id=ack.venue_order_id)
             self.storage.set_order_status(order.id, "filled")
+            # Mirror the venue's post-fill position into the ledger. We read it
+            # back from the broker rather than deriving it from the fill, so the
+            # ledger starts from the venue's arithmetic and reconciliation is
+            # comparing against a genuinely independent source next pass.
+            self._sync_position(ctx.signal.instrument, assessment)
             return self._finish(replace(cand, order=order), Decision.FILLED,
                                 "execution",
                                 f"filled {ack.fill.qty:.8f} @ {ack.fill.price:.6f} "
@@ -139,6 +144,22 @@ class Pipeline:
 
         return self._finish(replace(cand, order=order), Decision.SUBMITTED,
                             "execution", f"venue order {ack.venue_order_id}")
+
+    def _sync_position(self, instrument, assessment) -> None:
+        """Write the venue's current position for this instrument to the ledger."""
+        current = next((p for p in self.broker.positions()
+                        if p.instrument.key == instrument.key), None)
+        if current is None or current.qty == 0:
+            self.storage.delete_position(instrument.venue.value,
+                                         instrument.symbol)
+            return
+        self.storage.upsert_position(
+            venue=instrument.venue.value, symbol=instrument.symbol,
+            asset_class=instrument.asset_class.value, qty=current.qty,
+            avg_price=current.avg_price,
+            stop_price=assessment.stop_price,
+            tp_price=assessment.take_profit_price,
+            high_water=current.high_water, opened_ts=current.opened_ts)
 
     def _finish(self, cand: Candidate, decision: Decision, stage: str,
                 note: str) -> Candidate:

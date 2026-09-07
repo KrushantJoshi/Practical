@@ -90,7 +90,9 @@ corroboration. Folding rules:
 | `alpha/carry.py` | ✅ Funding-rate carry with break-even and stability gates |
 | `screens/` (rug screen) | ⬜ Not built |
 | `execution/alpaca.py`, `ccxt.py`, `solana.py` | ⬜ Not built |
-| `engine/reconcile.py`, `backtest/`, `ops/` | ⬜ Not built |
+| `engine/reconcile.py` | ✅ Venue-truth reconciliation; halts on mismatch |
+| `backtest/`, `ops/` | ⬜ Not built |
+| Exit handling (stops, targets, time stops) | ⬜ Not built — pipeline only opens |
 
 Core is **stdlib-only** (Python 3.11 `tomllib`, `sqlite3`), so it runs with no
 install. Third-party dependencies stay isolated in adapters.
@@ -107,7 +109,14 @@ PYTHONPATH=src python3 -m tradebot status
 PYTHONPATH=src python3 -m tradebot halt --reason "stepping away"
 PYTHONPATH=src python3 -m tradebot resume --by yourname
 PYTHONPATH=src python3 -m tradebot carry-table     # break-even economics
+PYTHONPATH=src python3 -m tradebot reconcile      # ledger vs venue
 ```
+
+Paper state is checkpointed to SQLite, so positions, cash, fees and
+client-order-ids survive process restarts — without that a 30-day paper run
+(required by the promotion gate) would reset every time you stopped the
+process, and a retried order after a restart would no longer be recognised as
+a duplicate.
 
 `carry-table` answers the only question that matters for the carry trade at
 small size — what funding rate survives your own costs:
@@ -159,9 +168,10 @@ trading/
     risk/       sizing.py  circuit.py  limits.py
     research/   llm.py     council.py
     execution/  base.py    paper.py
-    engine/     pipeline.py
+    engine/     pipeline.py  reconcile.py
     ingest/     feed.py
     alpha/      base.py    carry.py
   tests/  test_risk.py  test_council.py  test_execution.py
           test_pipeline.py  test_config.py  test_alpha.py
+          test_reconcile.py
 ```

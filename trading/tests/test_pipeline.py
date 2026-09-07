@@ -91,6 +91,31 @@ class TestHappyPath(PipelineCase):
         self.assertEqual(rows[0]["outcome"], "filled")
         self.assertEqual(rows[0]["stage"], "execution")
 
+    def test_fill_updates_the_position_ledger(self):
+        """Without this the ledger stays empty and reconciliation has nothing to
+        compare against, so every position looks 'unknown' to the venue check."""
+        self.pipeline().run(self.ctx())
+        rows = self.storage.positions()
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["symbol"], "BTC/USDT")
+        self.assertAlmostEqual(rows[0]["qty"],
+                               self.broker.position(INST).qty, places=10)
+        self.assertIsNotNone(rows[0]["stop_price"])
+
+    def test_ledger_row_is_cleared_once_the_venue_is_flat(self):
+        # NOTE: the pipeline currently only opens positions — exit handling
+        # (stops, targets, time stops) is not built yet. This exercises the
+        # sync path directly so the ledger cannot keep a row for a position the
+        # venue no longer holds.
+        p = self.pipeline()
+        p.run(self.ctx())
+        self.assertEqual(len(self.storage.positions()), 1)
+
+        self.broker.flatten(INST)
+        assessment = self.gate.evaluate(self.ctx())
+        p._sync_position(INST, assessment)
+        self.assertEqual(self.storage.positions(), [])
+
     def test_fill_is_recorded_once_and_order_marked_filled(self):
         self.pipeline().run(self.ctx())
         orders = list(self.storage._conn.execute("SELECT * FROM orders"))
