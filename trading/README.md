@@ -86,7 +86,9 @@ corroboration. Folding rules:
 | `engine/pipeline.py` | ✅ gate → council → re-gate → execute, fully journalled |
 | `cli.py` | ✅ `demo`, `status`, `halt`, `resume` |
 | `tests/` | ✅ 85 tests: clamp fuzzing, prompt injection, stage ordering |
-| `ingest/`, `alpha/`, `screens/` | ⬜ Not built — no live signal source yet |
+| `ingest/feed.py` | ✅ Point-in-time store; no lookahead, staleness observable |
+| `alpha/carry.py` | ✅ Funding-rate carry with break-even and stability gates |
+| `screens/` (rug screen) | ⬜ Not built |
 | `execution/alpaca.py`, `ccxt.py`, `solana.py` | ⬜ Not built |
 | `engine/reconcile.py`, `backtest/`, `ops/` | ⬜ Not built |
 
@@ -104,7 +106,23 @@ PYTHONPATH=src python3 -m tradebot demo           # end-to-end paper pass
 PYTHONPATH=src python3 -m tradebot status
 PYTHONPATH=src python3 -m tradebot halt --reason "stepping away"
 PYTHONPATH=src python3 -m tradebot resume --by yourname
+PYTHONPATH=src python3 -m tradebot carry-table     # break-even economics
 ```
+
+`carry-table` answers the only question that matters for the carry trade at
+small size — what funding rate survives your own costs:
+
+```
+ funding/8h  annualised  break-even  net APY @21d     $ on 500
+    0.0100%      11.0%       36.7d        -8.2%      -20.42
+    0.0200%      21.9%       18.3d         2.8%        6.95
+    0.0500%      54.8%        7.3d        35.6%       89.08
+```
+
+**At the funding rate most common on the majors (0.01% per 8h) this trade loses
+money at retail taker fees.** It takes 36.7 days just to repay the 110bps round
+trip. You need roughly 0.02%/8h before it turns positive — which is why the
+engine declines most of what a funding screener would flag.
 
 `demo` runs three candidates through the real pipeline against the paper broker,
 with no API key and no network:
@@ -142,5 +160,8 @@ trading/
     research/   llm.py     council.py
     execution/  base.py    paper.py
     engine/     pipeline.py
-  tests/  test_risk.py  test_council.py  test_execution.py  test_pipeline.py
+    ingest/     feed.py
+    alpha/      base.py    carry.py
+  tests/  test_risk.py  test_council.py  test_execution.py
+          test_pipeline.py  test_config.py  test_alpha.py
 ```

@@ -12,6 +12,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from .alpha.carry import break_even_periods, net_apy, round_trip_cost_bps
 from .config import Config, load
 from .execution.paper import PaperBroker, PaperConfig
 from .engine.pipeline import Pipeline
@@ -115,6 +116,43 @@ def cmd_demo(cfg: Config) -> int:
     return 0
 
 
+def cmd_carry_table(cfg: Config, fee_bps: float, spread_bps: float,
+                    equity: float) -> int:
+    """Show what funding rate the carry trade actually needs to pay off.
+
+    A funding screener shows you rates. This shows you whether a rate survives
+    your own costs — which is the only question that matters at small size.
+    """
+    slip = cfg.execution.slippage_bps_assumed
+    cost = round_trip_cost_bps(fee_bps, slip, spread_bps)
+    print(f"Assumptions: taker fee {fee_bps:.1f}bps/leg, slippage {slip:.1f}bps/leg, "
+          f"spread {spread_bps:.1f}bps")
+    print(f"Round trip crosses 4 legs (buy spot, sell perp, then unwind)")
+    print(f"  => round-trip cost = {cost:.0f} bps of notional\n")
+
+    header = (f"{'funding/8h':>11} {'annualised':>11} {'break-even':>11} "
+              f"{'net APY @21d':>13} {'$ on ' + f'{equity:.0f}':>12}")
+    print(header)
+    print("-" * len(header))
+    for rate in (0.00001, 0.00005, 0.0001, 0.0002, 0.0003, 0.0005, 0.001):
+        be_days = break_even_periods(cost, rate) * 8.0 / 24.0
+        apy = net_apy(rate, 8.0, cost, holding_days=21.0)
+        gross_apy = rate * 3.0 * 365.0
+        # Both legs must be funded, so deployable notional is about half.
+        dollars = apy * (equity / 2.0)
+        be = f"{be_days:.1f}d" if be_days < 1e6 else "never"
+        print(f"{rate * 100:>10.4f}% {gross_apy:>10.1%} {be:>11} "
+              f"{apy:>12.1%} {dollars:>11.2f}")
+
+    print(f"\nNotes:")
+    print(f"  - 'net APY' amortises the one-off {cost:.0f}bps cost over a 21-day hold.")
+    print(f"  - The $ column halves equity because a delta-neutral trade funds")
+    print(f"    both legs, so only ~${equity / 2:.0f} of {equity:.0f} is earning carry.")
+    print(f"  - Research says the documented capital floor for this trade is")
+    print(f"    $2,000; see docs/RESEARCH_FINDINGS.md section 2.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="tradebot")
     ap.add_argument("--config", default="config/config.toml",
@@ -122,6 +160,13 @@ def main(argv: list[str] | None = None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status")
     sub.add_parser("demo")
+    p_carry = sub.add_parser("carry-table",
+                             help="break-even economics for funding carry")
+    p_carry.add_argument("--fee-bps", type=float, default=10.0,
+                         help="taker fee per leg in bps (default 10)")
+    p_carry.add_argument("--spread-bps", type=float, default=5.0)
+    p_carry.add_argument("--equity", type=float, default=0.0,
+                         help="defaults to account_equity_start from config")
     p_halt = sub.add_parser("halt")
     p_halt.add_argument("--reason", default="manual halt")
     p_resume = sub.add_parser("resume")
@@ -143,6 +188,9 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_status(cfg)
     if args.cmd == "demo":
         return cmd_demo(cfg)
+    if args.cmd == "carry-table":
+        return cmd_carry_table(cfg, args.fee_bps, args.spread_bps,
+                               args.equity or cfg.account_equity_start)
     if args.cmd == "halt":
         return cmd_halt(cfg, args.reason)
     if args.cmd == "resume":
