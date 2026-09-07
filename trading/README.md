@@ -91,8 +91,9 @@ corroboration. Folding rules:
 | `screens/` (rug screen) | ⬜ Not built |
 | `execution/alpaca.py`, `ccxt.py`, `solana.py` | ⬜ Not built |
 | `engine/reconcile.py` | ✅ Venue-truth reconciliation; halts on mismatch |
+| `engine/exits.py` | ✅ Stops, trailing, targets, time stops, stale-data exits |
 | `backtest/`, `ops/` | ⬜ Not built |
-| Exit handling (stops, targets, time stops) | ⬜ Not built — pipeline only opens |
+| Live adapters (Alpaca / CCXT / Solana) | ⬜ Not built |
 
 Core is **stdlib-only** (Python 3.11 `tomllib`, `sqlite3`), so it runs with no
 install. Third-party dependencies stay isolated in adapters.
@@ -110,7 +111,20 @@ PYTHONPATH=src python3 -m tradebot halt --reason "stepping away"
 PYTHONPATH=src python3 -m tradebot resume --by yourname
 PYTHONPATH=src python3 -m tradebot carry-table     # break-even economics
 PYTHONPATH=src python3 -m tradebot reconcile      # ledger vs venue
+PYTHONPATH=src python3 -m tradebot sweep          # apply exit rules
 ```
+
+A full lifecycle, with the market moving against the position between calls:
+
+```
+demo   -> filled 0.50000000 @ 100.200075   (stop at 98.00, risk budget $2.50)
+sweep  -> stop  BTC/USDT @ 90.050000  pnl -5.0750  — price breached stop 98.00
+```
+
+Note the realised loss is **twice the risk budget**, and nothing malfunctioned —
+price gapped straight through the stop. `risk_per_trade` describes an orderly
+market; the drawdown breakers are the real backstop because they act on realised
+equity. See [docs/RISK_POLICY.md](docs/RISK_POLICY.md).
 
 Paper state is checkpointed to SQLite, so positions, cash, fees and
 client-order-ids survive process restarts — without that a 30-day paper run
@@ -168,10 +182,10 @@ trading/
     risk/       sizing.py  circuit.py  limits.py
     research/   llm.py     council.py
     execution/  base.py    paper.py
-    engine/     pipeline.py  reconcile.py
+    engine/     pipeline.py  reconcile.py  exits.py
     ingest/     feed.py
     alpha/      base.py    carry.py
   tests/  test_risk.py  test_council.py  test_execution.py
           test_pipeline.py  test_config.py  test_alpha.py
-          test_reconcile.py
+          test_reconcile.py  test_exits.py
 ```

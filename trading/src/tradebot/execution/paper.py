@@ -201,6 +201,16 @@ class PaperBroker:
             "realised_pnl": self.realised_pnl,
             "next_id": next(self._ids),
             "seen_client_ids": dict(self._seen_client_ids),
+            # Last-known quotes, so an exit sweep in a fresh process has prices
+            # to work with. Their timestamps are preserved, so a sweep can still
+            # tell that the data is stale rather than assuming it is current.
+            "quotes": [
+                {"symbol": q.instrument.symbol,
+                 "asset_class": q.instrument.asset_class.value,
+                 "venue": q.instrument.venue.value,
+                 "bid": q.bid, "ask": q.ask, "last": q.last, "ts": q.ts}
+                for q in self._quotes.values()
+            ],
             "positions": [
                 {"symbol": p.instrument.symbol,
                  "asset_class": p.instrument.asset_class.value,
@@ -222,6 +232,14 @@ class PaperBroker:
         # no longer be recognised as a duplicate and would open a second
         # position — the exact failure the idempotency key exists to prevent.
         self._seen_client_ids = dict(data.get("seen_client_ids", {}))
+        self._quotes = {}
+        for row in data.get("quotes", []):
+            inst = Instrument(symbol=row["symbol"],
+                              asset_class=AssetClass(row["asset_class"]),
+                              venue=Venue(row["venue"]))
+            self._quotes[inst.key] = Quote(
+                instrument=inst, bid=row["bid"], ask=row["ask"],
+                last=row["last"], ts=row.get("ts", 0.0))
         self._positions = {}
         for row in data.get("positions", []):
             inst = Instrument(symbol=row["symbol"],

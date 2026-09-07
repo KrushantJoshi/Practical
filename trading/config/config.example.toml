@@ -75,6 +75,21 @@ max_buy_tax_pct = 2.0
 max_sell_tax_pct = 2.0
 max_slippage_bps = 300.0
 
+[exits]
+# The primary stop rests at the venue from the moment of entry, so it survives
+# this process dying. These are the rules a resting order cannot express.
+# 0 disables a rule.
+trailing_stop_pct = 0.0          # e.g. 0.30 — keep it WIDE; see below
+trailing_arm_profit_pct = 0.02   # only start trailing once up 2%
+max_holding_seconds = 0.0        # e.g. 172800 for a 48h time stop
+exit_on_stale_data_seconds = 0.0 # e.g. 300 — close what you cannot see
+sweep_seconds = 30.0
+
+# On trailing width: research on memecoins found a 30% trail sits inside normal
+# volatility and shakes you out of the tail events that carry all the
+# expectancy. If you enable trailing at all, 0.30-0.50 is the defensible range,
+# not 0.10. Time stops are better supported by the evidence than price trails.
+
 [research]
 provider = "xai"              # none | anthropic | xai
 # Verified against xAI pricing, Sep 2026. grok-4.6 is the flagship

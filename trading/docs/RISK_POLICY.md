@@ -103,6 +103,27 @@ of compounding. When enough data exists, take ≤25% of the estimate and cap it 
 the fixed-fractional number. Kelly may only ever *reduce* size. Same asymmetry as
 the council.
 
+### Risk-per-trade is a planning number, not a guarantee
+
+Sizing assumes the stop fills at the stop price. It often does not. A worked
+example from the exit sweep in `tradebot demo`:
+
+```
+sized:    0.5 units @ 100.20, stop 98.00  -> intended risk $2.50 (0.5% of $500)
+gapped:   price jumped 100 -> 90, straight through the stop
+realised: exit @ 90.05                    -> actual loss $5.08 (1.0% of equity)
+```
+
+The loss was **2x the risk budget** and nothing malfunctioned. Slippage through
+a stop is normal in fast markets, and gaps over a weekend or a halt can be far
+worse than this. Two consequences:
+
+- Treat `risk_per_trade` as the risk in an orderly market, then assume the tail
+  is a multiple of it. This is a large part of why the default is 0.5% rather
+  than the 1–2% commonly quoted.
+- The drawdown breakers are the real backstop, because they act on realised
+  equity rather than on what the sizing math intended.
+
 `volatility_target_multiplier` is capped at 1.0: quiet markets do not earn
 leverage, because calm is exactly when a bot is most tempted to size up right
 before a regime change.

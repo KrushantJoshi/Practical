@@ -17,6 +17,7 @@ from .alpha.carry import break_even_periods, net_apy, round_trip_cost_bps
 from .config import Config, load
 from .execution.paper import PaperBroker, PaperConfig
 from .engine.pipeline import Pipeline
+from .engine.exits import ExitConfig, ExitManager
 from .engine.reconcile import Reconciler
 from .risk.circuit import CircuitBreaker
 from .risk.limits import GateContext, PortfolioState, PreTradeGate, VenueRules
@@ -209,6 +210,31 @@ def cmd_reconcile(cfg: Config) -> int:
     return 0 if result.ok else 1
 
 
+def _exit_cfg(cfg: Config) -> ExitConfig:
+    e = cfg.exits
+    return ExitConfig(trailing_stop_pct=e.trailing_stop_pct,
+                      trailing_arm_profit_pct=e.trailing_arm_profit_pct,
+                      max_holding_seconds=e.max_holding_seconds,
+                      exit_on_stale_data_seconds=e.exit_on_stale_data_seconds)
+
+
+def cmd_sweep(cfg: Config) -> int:
+    """Apply the exit policy to every open position."""
+    st = _storage(cfg)
+    broker = _paper_broker(cfg, st)
+    fired = ExitManager(broker=broker, storage=st,
+                        cfg=_exit_cfg(cfg)).run()
+    if not fired:
+        print(f"no exits triggered ({len(broker.positions())} position(s) held)")
+    for d in fired:
+        pnl = (d.trigger_price - d.position.avg_price) * d.position.qty
+        print(f"  {d.reason.value:<14} {d.position.instrument.symbol} "
+              f"@ {d.trigger_price:.6f}  pnl {pnl:+.4f}  — {d.detail}")
+    _save_paper(st, broker)
+    st.close()
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="tradebot")
     ap.add_argument("--config", default="config/config.toml",
@@ -217,6 +243,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("status")
     sub.add_parser("demo")
     sub.add_parser("reconcile")
+    sub.add_parser("sweep", help="apply exit rules to open positions")
     p_carry = sub.add_parser("carry-table",
                              help="break-even economics for funding carry")
     p_carry.add_argument("--fee-bps", type=float, default=10.0,
@@ -245,6 +272,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_status(cfg)
     if args.cmd == "demo":
         return cmd_demo(cfg)
+    if args.cmd == "sweep":
+        return cmd_sweep(cfg)
     if args.cmd == "reconcile":
         return cmd_reconcile(cfg)
     if args.cmd == "carry-table":

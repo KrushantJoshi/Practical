@@ -121,6 +121,20 @@ class ExecutionConfig:
 
 
 @dataclass(frozen=True)
+class ExitsConfig:
+    """Exit policy. Stops still rest at the venue; these are the rules a resting
+    order cannot express, plus a second line if the resting order fails."""
+
+    # Wide by default: a tight trail sits inside normal volatility and exits the
+    # few winners that pay for everything else.
+    trailing_stop_pct: float = 0.0
+    trailing_arm_profit_pct: float = 0.02
+    max_holding_seconds: float = 0.0
+    exit_on_stale_data_seconds: float = 0.0
+    sweep_seconds: float = 30.0
+
+
+@dataclass(frozen=True)
 class ScheduleConfig:
     # Seconds between pipeline passes, per class.
     equity_poll_seconds: float = 60.0
@@ -147,6 +161,7 @@ class Config:
     memecoin: MemecoinScreenConfig = field(default_factory=MemecoinScreenConfig)
     research: ResearchConfig = field(default_factory=ResearchConfig)
     execution: ExecutionConfig = field(default_factory=ExecutionConfig)
+    exits: ExitsConfig = field(default_factory=ExitsConfig)
     schedule: ScheduleConfig = field(default_factory=ScheduleConfig)
     equity_universe: tuple[str, ...] = ()
     crypto_universe: tuple[str, ...] = ()
@@ -201,6 +216,7 @@ _SECTIONS: dict[str, type] = {
     "memecoin": MemecoinScreenConfig,
     "research": ResearchConfig,
     "execution": ExecutionConfig,
+    "exits": ExitsConfig,
     "schedule": ScheduleConfig,
 }
 
@@ -244,6 +260,10 @@ def validate(cfg: Config) -> None:
         (cfg.execution.mode in ("paper", "live"), "execution.mode must be paper|live"),
         (cfg.research.provider in ("none", "anthropic", "xai"),
          "research.provider must be none|anthropic|xai"),
+        (0 <= cfg.exits.trailing_stop_pct < 1,
+         "exits.trailing_stop_pct must be in [0, 1)"),
+        (cfg.exits.max_holding_seconds >= 0,
+         "exits.max_holding_seconds cannot be negative"),
         (cfg.account_equity_start > 0, "account_equity_start must be positive"),
     ]
     problems = [msg for ok, msg in checks if not ok]

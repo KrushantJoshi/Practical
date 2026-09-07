@@ -210,6 +210,21 @@ class TestPersistence(unittest.TestCase):
         fresh.load_state(b.state_dict())
         self.assertAlmostEqual(fresh.realised_pnl, 10.0, places=6)
 
+    def test_quotes_survive_so_an_exit_sweep_has_prices(self):
+        self.b.submit(Order.create(INST, Side.BUY, 1.0, "s1"), "c1")
+        fresh = PaperBroker(500.0)
+        fresh.load_state(self.b.state_dict())   # note: no set_quote here
+        self.assertAlmostEqual(fresh.quote(INST).mid, quote().mid, places=8)
+
+    def test_restored_quotes_keep_their_timestamps(self):
+        # Otherwise a stale price would look freshly minted on restart, which is
+        # exactly the condition the staleness checks exist to catch.
+        q = Quote(instrument=INST, bid=99.0, ask=101.0, last=100.0, ts=1234.0)
+        self.b.set_quote(q)
+        fresh = PaperBroker(500.0)
+        fresh.load_state(self.b.state_dict())
+        self.assertEqual(fresh.quote(INST).ts, 1234.0)
+
     def test_empty_state_is_a_clean_start(self):
         fresh = PaperBroker(500.0)
         fresh.load_state({})
